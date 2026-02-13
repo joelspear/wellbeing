@@ -1,0 +1,274 @@
+.report {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 32px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.report-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--purple-primary);
+}
+
+.report-logo:hover {
+  text-decoration: none;
+}
+
+.report-content {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 24px 60px;
+}
+
+.report-card {
+  width: 100%;
+  max-width: 540px;
+  padding: 40px 36px;
+}
+
+.report-title {
+  font-size: 28px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.report-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Form */
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.report-fieldset {
+  border: none;
+  padding: 0;
+}
+
+.report-legend {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* Custom radio buttons */
+
+.report-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.report-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+
+.report-radio-label:hover {
+  border-color: var(--purple-light);
+  background: rgba(108, 92, 231, 0.03);
+}
+
+.report-radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.report-radio-control {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.report-radio-control::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--purple-primary);
+  transition: transform 0.2s;
+}
+
+.report-radio-input:checked + .report-radio-control {
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+.report-radio-input:checked + .report-radio-control::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.report-radio-input:checked ~ .report-radio-text {
+  color: var(--purple-primary);
+  font-weight: 600;
+}
+
+.report-radio-input:focus-visible + .report-radio-control {
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
+}
+
+.report-radio-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+/* Textarea */
+
+.report-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-textarea-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.report-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+/* Error */
+
+.report-error {
+  margin: 0;
+}
+
+/* Emergency disclaimer */
+
+.report-emergency-box {
+  margin: 0;
+}
+
+/* Submit button */
+
+.report-submit-btn {
+  width: 100%;
+}
+
+/* Footer links */
+
+.report-footer-links {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.report-back-link {
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+/* Confirmation state */
+
+.report-confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.report-confirmation-icon {
+  font-size: 48px;
+  margin-bottom: 4px;
+}
+
+.report-confirmation h2 {
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+.report-confirmation-text {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.report-confirmation-subtext {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.report-back-btn {
+  margin-top: 12px;
+}
+
+/* Footer */
+
+.report-footer {
+  text-align: center;
+  padding: 24px;
+}
+
+.report-footer-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+  .report-card {
+    padding: 28px 20px;
+  }
+
+  .report-title {
+    font-size: 24px;
+  }
+
+  .report-radio-label {
+    padding: 12px 14px;
+  }
+
+  .report-radio-text {
+    font-size: 14px;
+  }
+}

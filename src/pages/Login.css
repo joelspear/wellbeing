@@ -1,0 +1,142 @@
+.login {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 32px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.login-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--purple-primary);
+}
+
+.login-logo:hover {
+  text-decoration: none;
+}
+
+.login-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 40px 36px;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 28px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.login-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: -8px;
+}
+
+.login-error {
+  margin: 0;
+}
+
+.login-submit-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.login-footer-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 24px;
+  line-height: 1.5;
+}
+
+/* Success state */
+
+.login-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-success-icon {
+  font-size: 48px;
+  margin-bottom: 4px;
+}
+
+.login-success h2 {
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+.login-success-text {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.login-success-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.login-retry-btn {
+  margin-top: 8px;
+}
+
+/* Footer */
+
+.login-footer {
+  text-align: center;
+  padding: 24px;
+}
+
+.login-footer-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+  .login-card {
+    padding: 32px 24px;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+}

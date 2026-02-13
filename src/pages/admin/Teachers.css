@@ -1,0 +1,249 @@
+.admin-teachers {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Admin Navigation ─────────────────────────────────── */
+
+.admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  max-width: 900px;
+  width: 100%;
+  margin: 20px auto 0;
+  border-radius: 16px;
+}
+
+.admin-nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--purple-primary);
+  white-space: nowrap;
+}
+
+.admin-nav-logo:hover {
+  text-decoration: none;
+}
+
+.admin-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.admin-nav-link:hover {
+  background: rgba(108, 92, 231, 0.06);
+  color: var(--purple-primary);
+  text-decoration: none;
+}
+
+.admin-nav-link--active {
+  background: rgba(108, 92, 231, 0.1);
+  color: var(--purple-primary);
+  font-weight: 600;
+}
+
+.admin-nav-link--logout {
+  color: var(--red);
+}
+
+.admin-nav-link--logout:hover {
+  background: rgba(231, 76, 60, 0.06);
+  color: var(--red);
+}
+
+/* ── Page Content ─────────────────────────────────────── */
+
+.admin-teachers-content {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+
+.admin-teachers-title {
+  font-size: 32px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.admin-teachers-message {
+  margin-bottom: 20px;
+}
+
+/* ── Section Titles ───────────────────────────────────── */
+
+.admin-teachers-section-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+/* ── Form Cards ───────────────────────────────────────── */
+
+.admin-teachers-form-card {
+  margin-bottom: 24px;
+}
+
+.admin-teachers-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-teachers-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.admin-teachers-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-teachers-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-teachers-required {
+  color: var(--red);
+}
+
+.admin-teachers-optional {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.admin-teachers-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.admin-teachers-add-btn {
+  align-self: flex-start;
+  padding: 12px 24px;
+  font-size: 15px;
+}
+
+/* ── Table Card ───────────────────────────────────────── */
+
+.admin-teachers-table-card {
+  margin-bottom: 24px;
+}
+
+.admin-teachers-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-teachers-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-teachers-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 32px 16px !important;
+  font-size: 15px;
+}
+
+.admin-teachers-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-teachers-action-btn {
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+  white-space: nowrap;
+}
+
+.admin-teachers-action-btn--danger {
+  color: var(--red) !important;
+  border-color: rgba(231, 76, 60, 0.3) !important;
+}
+
+.admin-teachers-action-btn--danger:hover {
+  background: rgba(231, 76, 60, 0.06) !important;
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .admin-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+    margin: 12px 12px 0;
+    max-width: none;
+  }
+
+  .admin-nav-links {
+    gap: 4px;
+  }
+
+  .admin-nav-link {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .admin-teachers-content {
+    padding: 24px 16px 48px;
+  }
+
+  .admin-teachers-title {
+    font-size: 26px;
+  }
+
+  .admin-teachers-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-teachers-add-btn {
+    width: 100%;
+  }
+
+  .admin-teachers-table-wrap {
+    margin: 0 -24px;
+    padding: 0 24px;
+  }
+
+  .admin-teachers-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .data-table th,
+  .data-table td {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
