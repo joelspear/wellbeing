@@ -89,6 +89,8 @@ export default function AdminDashboard() {
 
     async function fetchData() {
       try {
+        if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
+
         // Attempt to get the current user's school_id
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('Not authenticated');

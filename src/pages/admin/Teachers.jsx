@@ -49,6 +49,8 @@ export default function Teachers() {
 
   async function fetchTeachers() {
     try {
+      if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
+
       const { data, error } = await supabase
         .from('teachers')
         .select('*')
@@ -86,6 +88,8 @@ export default function Teachers() {
     setAddLoading(true);
 
     try {
+      if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
+
       const { error } = await supabase.from('teachers').insert([
         {
           email: email.trim(),
@@ -132,6 +136,8 @@ export default function Teachers() {
     setBulkLoading(true);
 
     try {
+      if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
+
       const rows = lines.map((addr) => ({
         email: addr,
         status: 'Pending',

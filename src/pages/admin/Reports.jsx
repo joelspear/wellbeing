@@ -97,6 +97,8 @@ export default function Reports() {
 
     async function fetchReports() {
       try {
+        if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
+
         const {
           data: { user },
         } = await supabase.auth.getUser();

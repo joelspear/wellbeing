@@ -239,6 +239,8 @@ export default function Responses() {
     async function fetchResponses() {
       setLoading(true);
       try {
+        if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
+
         const { data, error } = await supabase
           .from('responses')
           .select('*')
