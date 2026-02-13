@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { questions, calculateScores } from '../lib/questions';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import './Checkin.css';
 
 const TOTAL_QUESTIONS = 10;
@@ -66,17 +66,23 @@ export default function Checkin() {
     const scores = calculateScores(answers);
 
     // Attempt Supabase insert (non-blocking; Supabase may not be configured)
-    try {
-      await supabase.from('checkin_responses').insert({
-        answers,
-        open_text: openText || null,
-        scores,
-        token: token || null,
-        created_at: new Date().toISOString(),
-      });
-    } catch (err) {
-      // Silently ignore -- Supabase may not be configured for MVP
-      console.warn('Supabase insert skipped:', err?.message);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('checkin_responses').insert({
+          q1_mood: answers.q1_mood,
+          q2_work_life_balance: answers.q2_work_life_balance,
+          q3_support: answers.q3_support,
+          q4_workload: answers.q4_workload,
+          q5_anxiety: answers.q5_anxiety,
+          q6_hope: answers.q6_hope,
+          q7_sleep: answers.q7_sleep,
+          q8_connection: answers.q8_connection,
+          q9_confidence: answers.q9_confidence,
+          q10_open_text: openText || null,
+        });
+      } catch (err) {
+        console.warn('Supabase insert skipped:', err?.message);
+      }
     }
 
     navigate('/checkin/results', {

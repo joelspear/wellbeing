@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import './Report.css';
 
 const CATEGORIES = [
@@ -33,16 +33,18 @@ export default function Report() {
     setLoading(true);
 
     try {
-      const { error: insertError } = await supabase
-        .from('anonymous_reports')
-        .insert({
-          school_id: schoolId || null,
-          category,
-          details: details.trim() || null,
-        });
+      if (isSupabaseConfigured && supabase) {
+        const { error: insertError } = await supabase
+          .from('anonymous_reports')
+          .insert({
+            school_id: schoolId || null,
+            report_type: category,
+            report_text: details.trim() || null,
+          });
 
-      if (insertError) {
-        throw insertError;
+        if (insertError) {
+          throw insertError;
+        }
       }
 
       setSubmitted(true);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import './Login.css';
 
 export default function Login() {
@@ -26,6 +26,11 @@ export default function Login() {
     }
     if (isSignUp && password.length < 6) {
       setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    if (!isSupabaseConfigured) {
+      setError('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
       return;
     }
 
