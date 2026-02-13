@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import './Login.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,22 +20,40 @@ export default function Login() {
       setError('Please enter your email address.');
       return;
     }
+    if (!password) {
+      setError('Please enter a password.');
+      return;
+    }
+    if (isSignUp && password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
 
     setLoading(true);
 
     try {
-      const { error: authError } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
-        options: {
-          emailRedirectTo: `${window.location.origin}/checkin`,
-        },
-      });
+      if (isSignUp) {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/login`,
+          },
+        });
 
-      if (authError) {
-        throw authError;
+        if (signUpError) throw signUpError;
+
+        setSignUpSuccess(true);
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+
+        if (signInError) throw signInError;
+
+        navigate('/checkin');
       }
-
-      setSent(true);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -48,32 +69,37 @@ export default function Login() {
 
       <main className="login-content">
         <div className="login-card card">
-          {sent ? (
+          {signUpSuccess ? (
             <div className="login-success">
               <div className="login-success-icon">&#x2709;</div>
               <h2>Check your inbox</h2>
               <p className="login-success-text">
-                We've sent a magic link to <strong>{email}</strong>. Click the link in the email to sign in.
+                We've sent a confirmation email to <strong>{email}</strong>. Click the link in the email to verify your account.
               </p>
               <p className="login-success-hint">
-                Don't see it? Check your spam folder or try again.
+                Don't see it? Check your spam folder.
               </p>
               <button
                 type="button"
                 className="btn-secondary login-retry-btn"
                 onClick={() => {
-                  setSent(false);
+                  setSignUpSuccess(false);
+                  setIsSignUp(false);
                   setError(null);
                 }}
               >
-                Send another link
+                Back to sign in
               </button>
             </div>
           ) : (
             <>
-              <h2 className="login-title">Welcome back</h2>
+              <h2 className="login-title">
+                {isSignUp ? 'Create your account' : 'Welcome back'}
+              </h2>
               <p className="login-subtitle">
-                Sign in with your school email to continue.
+                {isSignUp
+                  ? 'Sign up with your school email to get started.'
+                  : 'Sign in with your school email to continue.'}
               </p>
 
               <form className="login-form" onSubmit={handleSubmit}>
@@ -92,6 +118,20 @@ export default function Login() {
                   disabled={loading}
                 />
 
+                <label className="login-label" htmlFor="password">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  className="input-field"
+                  placeholder={isSignUp ? 'Create a password (min. 6 characters)' : 'Enter your password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                  disabled={loading}
+                />
+
                 {error && (
                   <div className="alert-box alert-box-red login-error">
                     {error}
@@ -103,13 +143,40 @@ export default function Login() {
                   className="btn-primary login-submit-btn"
                   disabled={loading}
                 >
-                  {loading ? 'Sending...' : 'Send me a magic link'}
+                  {loading
+                    ? (isSignUp ? 'Creating account...' : 'Signing in...')
+                    : (isSignUp ? 'Create account' : 'Sign in')}
                 </button>
               </form>
 
+              <p className="login-toggle-text">
+                {isSignUp ? (
+                  <>
+                    Already have an account?{' '}
+                    <button
+                      type="button"
+                      className="login-toggle-btn"
+                      onClick={() => { setIsSignUp(false); setError(null); }}
+                    >
+                      Sign in
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      className="login-toggle-btn"
+                      onClick={() => { setIsSignUp(true); setError(null); }}
+                    >
+                      Sign up
+                    </button>
+                  </>
+                )}
+              </p>
+
               <p className="login-footer-text">
-                No account? Ask your school admin to add you, or{' '}
-                <Link to="/report">submit an anonymous report</Link> instead.
+                Or <Link to="/report">submit an anonymous report</Link> without an account.
               </p>
             </>
           )}
