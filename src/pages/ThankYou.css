@@ -1,0 +1,161 @@
+.thankyou {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.thankyou-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 32px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.thankyou-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--purple-primary);
+}
+
+.thankyou-logo:hover {
+  text-decoration: none;
+}
+
+.thankyou-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.thankyou-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.thankyou-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.thankyou-title {
+  font-size: 32px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.thankyou-message {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.thankyou-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.thankyou-support {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.thankyou-support-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.thankyou-support-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.thankyou-helplines {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.thankyou-helpline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #eee;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.thankyou-helpline:hover {
+  border-color: var(--purple-primary);
+  text-decoration: none;
+}
+
+.thankyou-helpline-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.thankyou-helpline-number {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--purple-primary);
+}
+
+.thankyou-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.thankyou-btn {
+  padding: 12px 24px;
+  font-size: 15px;
+}
+
+.thankyou-footer {
+  text-align: center;
+  padding: 24px;
+}
+
+.thankyou-footer-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .thankyou-card {
+    padding: 32px 24px;
+  }
+
+  .thankyou-title {
+    font-size: 26px;
+  }
+
+  .thankyou-actions {
+    flex-direction: column;
+  }
+}

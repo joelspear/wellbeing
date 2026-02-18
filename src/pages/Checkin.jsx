@@ -17,9 +17,33 @@ export default function Checkin() {
   const [direction, setDirection] = useState('forward');
   const [animating, setAnimating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [user, setUser] = useState(null);
 
   // Check for token in URL params (MVP: just show the survey directly)
   const token = searchParams.get('token');
+
+  // Auth check - redirect to login if not signed in
+  useEffect(() => {
+    async function checkAuth() {
+      if (!isSupabaseConfigured || !supabase) {
+        setAuthChecking(false);
+        navigate('/login?role=teacher');
+        return;
+      }
+
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) {
+        navigate('/login?role=teacher');
+        return;
+      }
+
+      setUser(currentUser);
+      setAuthChecking(false);
+    }
+
+    checkAuth();
+  }, [navigate]);
 
   useEffect(() => {
     if (token) {
@@ -69,6 +93,7 @@ export default function Checkin() {
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('checkin_responses').insert({
+          teacher_id: user?.id || null,
           q1_mood: answers.q1_mood,
           q2_work_life_balance: answers.q2_work_life_balance,
           q3_support: answers.q3_support,
@@ -85,9 +110,8 @@ export default function Checkin() {
       }
     }
 
-    navigate('/checkin/results', {
-      state: { answers, scores, openText },
-    });
+    // Navigate to thank you page - teachers do NOT see their results
+    navigate('/checkin/thankyou');
   };
 
   // Determine animation class
@@ -97,6 +121,19 @@ export default function Checkin() {
     }
     return direction === 'forward' ? 'checkin-slide-enter-right' : 'checkin-slide-enter-left';
   };
+
+  if (authChecking) {
+    return (
+      <div className="checkin">
+        <div className="checkin-header">
+          <div className="checkin-logo">MindCheck</div>
+        </div>
+        <div className="checkin-body" style={{ textAlign: 'center', paddingTop: '80px' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="checkin">

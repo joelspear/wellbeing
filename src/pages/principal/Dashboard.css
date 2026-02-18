@@ -1,0 +1,282 @@
+.p-dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.p-dashboard-header h1 {
+  font-size: 32px;
+  color: var(--text-primary);
+}
+
+.p-dashboard-loading {
+  text-align: center;
+  padding: 60px 24px;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Stats grid */
+
+.p-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.p-stat-card {
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.p-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.p-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.p-stat-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Sections */
+
+.p-section {
+  margin-bottom: 32px;
+}
+
+.p-section-title {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* Bar chart */
+
+.p-chart {
+  padding: 24px;
+}
+
+.p-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 12px;
+  height: 200px;
+}
+
+.p-chart-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.p-chart-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.p-chart-bar-track {
+  flex: 1;
+  width: 100%;
+  max-width: 60px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.p-chart-bar {
+  width: 100%;
+  border-radius: 8px 8px 4px 4px;
+  transition: height 0.4s ease;
+  min-height: 4px;
+}
+
+.p-chart-bar--green {
+  background: linear-gradient(180deg, #27ae60, #2ecc71);
+}
+
+.p-chart-bar--amber {
+  background: linear-gradient(180deg, #f39c12, #f1c40f);
+}
+
+.p-chart-bar--red {
+  background: linear-gradient(180deg, #e74c3c, #e67e73);
+}
+
+.p-chart-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+/* Table */
+
+.p-table-wrap {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.p-table-wrap .data-table {
+  min-width: 500px;
+}
+
+.p-table-wrap .data-table th:first-child,
+.p-table-wrap .data-table td:first-child {
+  padding-left: 24px;
+}
+
+.p-table-wrap .data-table th:last-child,
+.p-table-wrap .data-table td:last-child {
+  padding-right: 24px;
+}
+
+/* Flagged responses */
+
+.p-flagged-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.p-flagged-item {
+  padding: 20px 24px;
+  border-left: 4px solid var(--red);
+}
+
+.p-flagged-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.p-flagged-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.p-flagged-date {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.p-flagged-score {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.p-flagged-reason {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Reports summary */
+
+.p-reports-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+}
+
+.p-reports-count {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.p-reports-number {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1;
+}
+
+.p-reports-label {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .p-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .p-chart-bars {
+    height: 160px;
+  }
+
+  .p-dashboard-header h1 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .p-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .p-stat-value {
+    font-size: 26px;
+  }
+
+  .p-chart-bars {
+    height: 140px;
+    gap: 8px;
+  }
+
+  .p-chart-bar-track {
+    max-width: 44px;
+  }
+
+  .p-reports-summary {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .p-reports-count {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .p-flagged-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .p-section-title {
+    font-size: 18px;
+  }
+}

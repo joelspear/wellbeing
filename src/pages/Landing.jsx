@@ -6,9 +6,14 @@ export default function Landing() {
     <div className="landing">
       <header className="landing-header">
         <div className="landing-logo">MindCheck</div>
-        <Link to="/login" className="btn-secondary" style={{ padding: '10px 20px', fontSize: '14px' }}>
-          Log in
-        </Link>
+        <div className="landing-header-actions">
+          <Link to="/login?role=teacher" className="btn-secondary" style={{ padding: '10px 20px', fontSize: '14px' }}>
+            Teacher Login
+          </Link>
+          <Link to="/login?role=principal" className="btn-secondary" style={{ padding: '10px 20px', fontSize: '14px' }}>
+            Principal Login
+          </Link>
+        </div>
       </header>
 
       <main className="landing-hero">
@@ -19,11 +24,11 @@ export default function Landing() {
           Purpose-built for Australian schools. Takes less than 60 seconds.
         </p>
         <div className="landing-cta">
-          <Link to="/checkin" className="btn-primary">
-            I'm a Teacher
+          <Link to="/login?role=teacher" className="btn-primary">
+            Teacher Sign Up / Login
           </Link>
-          <Link to="/admin" className="btn-secondary">
-            School Admin
+          <Link to="/login?role=principal" className="btn-secondary">
+            Principal Portal
           </Link>
         </div>
       </main>

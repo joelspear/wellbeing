@@ -39,6 +39,25 @@
   text-align: center;
 }
 
+.login-role-badge {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.login-role-badge--teacher {
+  background: #e8f8f0;
+  color: var(--green);
+}
+
+.login-role-badge--principal {
+  background: #ede7f6;
+  color: var(--purple-primary);
+}
+
 .login-title {
   font-size: 28px;
   color: var(--text-primary);

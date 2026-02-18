@@ -1,0 +1,154 @@
+.p-reports-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.p-reports-title {
+  font-size: 32px;
+  color: var(--text-primary);
+}
+
+.p-reports-loading {
+  text-align: center;
+  padding: 60px 24px;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Filter tabs */
+
+.p-reports-filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.p-reports-filter-tab {
+  padding: 8px 18px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.p-reports-filter-tab:hover {
+  border-color: var(--purple-primary);
+  color: var(--purple-primary);
+}
+
+.p-reports-filter-tab--active {
+  background: var(--purple-primary);
+  border-color: var(--purple-primary);
+  color: white;
+}
+
+/* Reports list */
+
+.p-reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.p-reports-card {
+  padding: 24px;
+}
+
+.p-reports-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.p-reports-category-badge {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.p-reports-category-colleague { background: #e8f4f8; color: #2980b9; }
+.p-reports-category-safety { background: #fef3e2; color: #e67e22; }
+.p-reports-category-self { background: #fde8e8; color: #e74c3c; }
+.p-reports-category-bullying { background: #f0e6f6; color: #8e44ad; }
+.p-reports-category-other { background: #f0f0f0; color: #636e72; }
+
+.p-reports-card-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.p-reports-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.p-reports-card-date {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.p-reports-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.p-reports-action-btn {
+  padding: 6px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.p-reports-action-btn:hover {
+  border-color: var(--purple-primary);
+  color: var(--purple-primary);
+}
+
+.p-reports-action-btn--green {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.p-reports-action-btn--green:hover {
+  background: #e8f8f0;
+}
+
+.p-reports-empty {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .p-reports-title {
+    font-size: 24px;
+  }
+
+  .p-reports-card-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

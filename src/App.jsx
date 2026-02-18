@@ -1,14 +1,15 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Checkin from './pages/Checkin';
-import Results from './pages/Results';
+import ThankYou from './pages/ThankYou';
 import Resources from './pages/Resources';
 import Report from './pages/Report';
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminTeachers from './pages/admin/Teachers';
-import AdminResponses from './pages/admin/Responses';
-import AdminReports from './pages/admin/Reports';
+import PrincipalLayout from './components/PrincipalLayout';
+import PrincipalDashboard from './pages/principal/Dashboard';
+import PrincipalResponses from './pages/principal/Responses';
+import PrincipalTeachers from './pages/principal/Teachers';
+import PrincipalReports from './pages/principal/Reports';
 
 function BackgroundOrbs() {
   return (
@@ -26,16 +27,28 @@ export default function App() {
       <BackgroundOrbs />
       <div className="page-container">
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/checkin" element={<Checkin />} />
-          <Route path="/checkin/results" element={<Results />} />
-          <Route path="/checkin/resources" element={<Resources />} />
           <Route path="/report" element={<Report />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/teachers" element={<AdminTeachers />} />
-          <Route path="/admin/responses" element={<AdminResponses />} />
-          <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/checkin/resources" element={<Resources />} />
+
+          {/* Teacher routes (auth required - handled inside component) */}
+          <Route path="/checkin" element={<Checkin />} />
+          <Route path="/checkin/thankyou" element={<ThankYou />} />
+
+          {/* Principal portal (auth required - handled inside layout) */}
+          <Route path="/principal" element={<PrincipalLayout><PrincipalDashboard /></PrincipalLayout>} />
+          <Route path="/principal/responses" element={<PrincipalLayout><PrincipalResponses /></PrincipalLayout>} />
+          <Route path="/principal/teachers" element={<PrincipalLayout><PrincipalTeachers /></PrincipalLayout>} />
+          <Route path="/principal/reports" element={<PrincipalLayout><PrincipalReports /></PrincipalLayout>} />
+
+          {/* Redirect old admin routes to principal */}
+          <Route path="/admin" element={<Navigate to="/principal" replace />} />
+          <Route path="/admin/*" element={<Navigate to="/principal" replace />} />
+
+          {/* Redirect old results route to thank you */}
+          <Route path="/checkin/results" element={<Navigate to="/checkin/thankyou" replace />} />
         </Routes>
       </div>
     </>

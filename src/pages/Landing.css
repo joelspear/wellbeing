@@ -21,6 +21,12 @@
   color: var(--purple-primary);
 }
 
+.landing-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .landing-hero {
   flex: 1;
   display: flex;

@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import './Login.css';
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
+  const role = searchParams.get('role') || 'teacher';
+  const isPrincipal = role === 'principal';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
@@ -28,6 +33,10 @@ export default function Login() {
       setError('Password must be at least 6 characters.');
       return;
     }
+    if (isSignUp && !isPrincipal && !fullName.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
 
     if (!isSupabaseConfigured) {
       setError('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
@@ -42,7 +51,11 @@ export default function Login() {
           email: email.trim(),
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/login`,
+            emailRedirectTo: `${window.location.origin}/login?role=${role}`,
+            data: {
+              full_name: fullName.trim() || null,
+              role: isPrincipal ? 'admin' : 'teacher',
+            },
           },
         });
 
@@ -57,7 +70,7 @@ export default function Login() {
 
         if (signInError) throw signInError;
 
-        navigate('/checkin');
+        navigate(isPrincipal ? '/principal' : '/checkin');
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
@@ -98,16 +111,37 @@ export default function Login() {
             </div>
           ) : (
             <>
+              <div className={`login-role-badge ${isPrincipal ? 'login-role-badge--principal' : 'login-role-badge--teacher'}`}>
+                {isPrincipal ? 'Principal Portal' : 'Teacher'}
+              </div>
               <h2 className="login-title">
                 {isSignUp ? 'Create your account' : 'Welcome back'}
               </h2>
               <p className="login-subtitle">
                 {isSignUp
-                  ? 'Sign up with your school email to get started.'
-                  : 'Sign in with your school email to continue.'}
+                  ? `Sign up with your school email to get started${isPrincipal ? ' as a principal' : ''}.`
+                  : `Sign in with your school email to continue.`}
               </p>
 
               <form className="login-form" onSubmit={handleSubmit}>
+                {isSignUp && !isPrincipal && (
+                  <>
+                    <label className="login-label" htmlFor="fullName">
+                      Full name
+                    </label>
+                    <input
+                      id="fullName"
+                      type="text"
+                      className="input-field"
+                      placeholder="Jane Smith"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      autoComplete="name"
+                      disabled={loading}
+                    />
+                  </>
+                )}
+
                 <label className="login-label" htmlFor="email">
                   Email address
                 </label>
@@ -181,7 +215,11 @@ export default function Login() {
               </p>
 
               <p className="login-footer-text">
-                Or <Link to="/report">submit an anonymous report</Link> without an account.
+                {isPrincipal ? (
+                  <Link to="/login?role=teacher">Sign in as a teacher instead</Link>
+                ) : (
+                  <Link to="/login?role=principal">Sign in as a principal instead</Link>
+                )}
               </p>
             </>
           )}
