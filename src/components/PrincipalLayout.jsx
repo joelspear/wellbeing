@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { getDemoUser, clearDemoUser } from '../lib/demo';
 import './PrincipalLayout.css';
 
 const NAV_SECTIONS = [
@@ -14,7 +15,7 @@ const NAV_SECTIONS = [
     title: 'MANAGEMENT',
     items: [
       { path: '/principal/responses', label: 'Check-in Responses', icon: '\u{1F4CB}' },
-      { path: '/principal/teachers', label: 'Teachers', icon: '\u{1F468}\u{200D}\u{1F3EB}' },
+      { path: '/principal/teachers', label: 'Staff Members', icon: '\u{1F468}\u{200D}\u{1F3EB}' },
     ],
   },
   {
@@ -25,36 +26,45 @@ const NAV_SECTIONS = [
   },
 ];
 
+const DEMO_NOTIFICATIONS = [
+  { id: 1, text: 'Sarah Mitchell submitted a check-in', time: '2 hours ago', read: false },
+  { id: 2, text: 'James O\'Brien submitted a check-in', time: '3 hours ago', read: false },
+  { id: 3, text: 'Priya Sharma submitted a check-in (flagged)', time: '1 day ago', read: true },
+];
+
 export default function PrincipalLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
   const [user, setUser] = useState(null);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState(DEMO_NOTIFICATIONS);
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   useEffect(() => {
     async function checkAuth() {
-      if (!isSupabaseConfigured || !supabase) {
+      if (isSupabaseConfigured && supabase) {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser) {
+          const userRole = currentUser.user_metadata?.role;
+          if (userRole === 'principal') {
+            setUser(currentUser);
+            setAuthChecking(false);
+            return;
+          }
+        }
+      }
+
+      const demoUser = getDemoUser();
+      if (demoUser && demoUser.user_metadata?.role === 'principal') {
+        setUser(demoUser);
         setAuthChecking(false);
-        navigate('/login?role=principal');
         return;
       }
 
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
-        navigate('/login?role=principal');
-        return;
-      }
-
-      // Role check - only principals can access this portal
-      const userRole = currentUser.user_metadata?.role;
-      if (userRole !== 'principal') {
-        navigate('/login?role=principal');
-        return;
-      }
-
-      setUser(currentUser);
-      setAuthChecking(false);
+      navigate('/login');
     }
 
     checkAuth();
@@ -64,7 +74,12 @@ export default function PrincipalLayout({ children }) {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
     }
+    clearDemoUser();
     navigate('/');
+  };
+
+  const markAllRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
   if (authChecking) {
@@ -94,9 +109,16 @@ export default function PrincipalLayout({ children }) {
           <span className="principal-hamburger-line" />
         </button>
         <span className="principal-mobile-title">MindCheck</span>
+        <button
+          className="principal-notif-btn-mobile"
+          onClick={() => setShowNotifications(!showNotifications)}
+          type="button"
+        >
+          &#x1F514;
+          {unreadCount > 0 && <span className="principal-notif-badge">{unreadCount}</span>}
+        </button>
       </div>
 
-      {/* Sidebar overlay for mobile */}
       {sidebarOpen && (
         <div
           className="principal-sidebar-overlay"
@@ -158,6 +180,62 @@ export default function PrincipalLayout({ children }) {
 
       {/* Main content */}
       <main className="principal-main">
+        {/* Top bar with notifications */}
+        <div className="principal-topbar">
+          <div className="principal-topbar-greeting">
+            Welcome back, <strong>{userName}</strong>
+          </div>
+          <div className="principal-topbar-actions">
+            <button
+              className="principal-notif-btn"
+              onClick={() => setShowNotifications(!showNotifications)}
+              type="button"
+            >
+              &#x1F514;
+              {unreadCount > 0 && <span className="principal-notif-badge">{unreadCount}</span>}
+            </button>
+          </div>
+
+          {showNotifications && (
+            <div className="principal-notif-dropdown card">
+              <div className="principal-notif-header">
+                <h3 className="principal-notif-title">Notifications</h3>
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    className="principal-notif-mark-read"
+                    onClick={markAllRead}
+                  >
+                    Mark all read
+                  </button>
+                )}
+              </div>
+              <div className="principal-notif-list">
+                {notifications.length === 0 ? (
+                  <p className="principal-notif-empty">No notifications</p>
+                ) : (
+                  notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      className={`principal-notif-item ${!n.read ? 'principal-notif-item--unread' : ''}`}
+                    >
+                      <p className="principal-notif-text">{n.text}</p>
+                      <span className="principal-notif-time">{n.time}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {showNotifications && (
+          <div
+            className="principal-notif-backdrop"
+            onClick={() => setShowNotifications(false)}
+          />
+        )}
+
         {children}
       </main>
     </div>

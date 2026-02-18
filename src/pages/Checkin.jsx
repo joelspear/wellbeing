@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { questions, calculateScores } from '../lib/questions';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { attemptDemoLogin } from '../lib/demo';
 import './Checkin.css';
 
 const TOTAL_QUESTIONS = 10;
@@ -9,48 +10,132 @@ const AUTO_ADVANCE_DELAY = 400;
 
 export default function Checkin() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
+  // Auth phase state
+  const [phase, setPhase] = useState('auth'); // 'auth' or 'survey'
+  const [authMode, setAuthMode] = useState('new'); // 'new' or 'returning'
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState(null);
+  const [user, setUser] = useState(null);
+
+  // Survey phase state
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [openText, setOpenText] = useState('');
   const [direction, setDirection] = useState('forward');
   const [animating, setAnimating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [authChecking, setAuthChecking] = useState(true);
-  const [user, setUser] = useState(null);
 
-  // Check for token in URL params (MVP: just show the survey directly)
-  const token = searchParams.get('token');
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    setAuthError(null);
 
-  // Auth check - redirect to login if not signed in
-  useEffect(() => {
-    async function checkAuth() {
-      if (!isSupabaseConfigured || !supabase) {
-        setAuthChecking(false);
-        navigate('/login?role=teacher');
-        return;
-      }
-
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
-        navigate('/login?role=teacher');
-        return;
-      }
-
-      setUser(currentUser);
-      setAuthChecking(false);
+    if (authMode === 'new' && !fullName.trim()) {
+      setAuthError('Please enter your full name.');
+      return;
+    }
+    if (!email.trim()) {
+      setAuthError('Please enter your email address.');
+      return;
+    }
+    if (!password) {
+      setAuthError('Please enter a password.');
+      return;
+    }
+    if (authMode === 'new' && password.length < 6) {
+      setAuthError('Password must be at least 6 characters.');
+      return;
     }
 
-    checkAuth();
-  }, [navigate]);
+    setAuthLoading(true);
 
-  useEffect(() => {
-    if (token) {
-      // In a full implementation, validate the token and identify the teacher.
-      // For MVP, we proceed directly to the survey.
+    try {
+      if (authMode === 'new') {
+        // Sign up new teacher
+        if (isSupabaseConfigured && supabase) {
+          const { data, error } = await supabase.auth.signUp({
+            email: email.trim(),
+            password,
+            options: {
+              data: {
+                full_name: fullName.trim(),
+                role: 'teacher',
+              },
+            },
+          });
+
+          if (error) throw error;
+
+          // Some Supabase configs auto-confirm; check if we got a session
+          if (data?.user) {
+            setUser(data.user);
+            setPhase('survey');
+            return;
+          }
+
+          // If email confirmation is required, try signing in
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
+
+          if (!signInError && signInData?.user) {
+            setUser(signInData.user);
+            setPhase('survey');
+            return;
+          }
+        }
+
+        // Demo fallback
+        const demoUser = attemptDemoLogin(email, password, 'teacher');
+        if (demoUser) {
+          setUser(demoUser);
+          setPhase('survey');
+          return;
+        }
+
+        // If Supabase didn't error but also didn't give us a user, still proceed
+        setUser({ id: null, email: email.trim(), user_metadata: { full_name: fullName.trim(), role: 'teacher' } });
+        setPhase('survey');
+      } else {
+        // Returning teacher - sign in
+        let authenticated = false;
+
+        if (isSupabaseConfigured && supabase) {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
+
+          if (!error && data?.user) {
+            setUser(data.user);
+            authenticated = true;
+          }
+        }
+
+        if (!authenticated) {
+          const demoUser = attemptDemoLogin(email, password, 'teacher');
+          if (demoUser) {
+            setUser(demoUser);
+            authenticated = true;
+          }
+        }
+
+        if (!authenticated) {
+          throw new Error('Invalid email or password. Please check your credentials or create a new account.');
+        }
+
+        setPhase('survey');
+      }
+    } catch (err) {
+      setAuthError(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setAuthLoading(false);
     }
-  }, [token]);
+  };
 
   const currentQ = currentQuestion < questions.length ? questions[currentQuestion] : null;
   const isTextQuestion = currentQuestion === 9;
@@ -59,7 +144,6 @@ export default function Checkin() {
   const transitionTo = useCallback((nextIndex, dir) => {
     setDirection(dir);
     setAnimating(true);
-    // Short timeout to trigger the exit animation, then switch question
     setTimeout(() => {
       setCurrentQuestion(nextIndex);
       setAnimating(false);
@@ -69,7 +153,6 @@ export default function Checkin() {
   const handleSelect = useCallback((questionKey, value) => {
     setAnswers((prev) => ({ ...prev, [questionKey]: value }));
 
-    // Auto-advance after a short delay
     setTimeout(() => {
       if (currentQuestion < 9) {
         transitionTo(currentQuestion + 1, 'forward');
@@ -89,11 +172,12 @@ export default function Checkin() {
 
     const scores = calculateScores(answers);
 
-    // Attempt Supabase insert (non-blocking; Supabase may not be configured)
     if (isSupabaseConfigured && supabase) {
       try {
         await supabase.from('checkin_responses').insert({
           teacher_id: user?.id || null,
+          teacher_name: user?.user_metadata?.full_name || fullName || null,
+          teacher_email: user?.email || email || null,
           q1_mood: answers.q1_mood,
           q2_work_life_balance: answers.q2_work_life_balance,
           q3_support: answers.q3_support,
@@ -110,11 +194,17 @@ export default function Checkin() {
       }
     }
 
-    // Navigate to thank you page - teachers do NOT see their results
-    navigate('/checkin/thankyou');
+    // Sign out the teacher so they don't stay logged in
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch {}
+    }
+
+    // Redirect back to marketing page
+    navigate('/');
   };
 
-  // Determine animation class
   const getSlideClass = () => {
     if (animating) {
       return direction === 'forward' ? 'checkin-slide-exit-left' : 'checkin-slide-exit-right';
@@ -122,19 +212,111 @@ export default function Checkin() {
     return direction === 'forward' ? 'checkin-slide-enter-right' : 'checkin-slide-enter-left';
   };
 
-  if (authChecking) {
+  // Auth phase
+  if (phase === 'auth') {
     return (
       <div className="checkin">
         <div className="checkin-header">
           <div className="checkin-logo">MindCheck</div>
         </div>
-        <div className="checkin-body" style={{ textAlign: 'center', paddingTop: '80px' }}>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>Checking authentication...</p>
+
+        <div className="checkin-auth">
+          <div className="checkin-auth-card card">
+            <div className="checkin-auth-icon">&#x1F331;</div>
+            <h2 className="checkin-auth-title">Staff Wellbeing Check-in</h2>
+            <p className="checkin-auth-subtitle">
+              Enter your details to begin your confidential wellbeing check-in.
+            </p>
+
+            <div className="checkin-auth-tabs">
+              <button
+                type="button"
+                className={`checkin-auth-tab ${authMode === 'new' ? 'checkin-auth-tab--active' : ''}`}
+                onClick={() => { setAuthMode('new'); setAuthError(null); }}
+              >
+                First Time
+              </button>
+              <button
+                type="button"
+                className={`checkin-auth-tab ${authMode === 'returning' ? 'checkin-auth-tab--active' : ''}`}
+                onClick={() => { setAuthMode('returning'); setAuthError(null); }}
+              >
+                Returning Staff
+              </button>
+            </div>
+
+            <form className="checkin-auth-form" onSubmit={handleAuth}>
+              {authMode === 'new' && (
+                <div className="checkin-auth-field">
+                  <label className="checkin-auth-label" htmlFor="checkin-name">Full Name</label>
+                  <input
+                    id="checkin-name"
+                    type="text"
+                    className="input-field"
+                    placeholder="Your full name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    autoComplete="name"
+                    disabled={authLoading}
+                  />
+                </div>
+              )}
+
+              <div className="checkin-auth-field">
+                <label className="checkin-auth-label" htmlFor="checkin-email">Email Address</label>
+                <input
+                  id="checkin-email"
+                  type="email"
+                  className="input-field"
+                  placeholder="you@school.edu.au"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  autoFocus
+                  disabled={authLoading}
+                />
+              </div>
+
+              <div className="checkin-auth-field">
+                <label className="checkin-auth-label" htmlFor="checkin-password">Password</label>
+                <input
+                  id="checkin-password"
+                  type="password"
+                  className="input-field"
+                  placeholder={authMode === 'new' ? 'Create a password (min. 6 characters)' : 'Enter your password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={authMode === 'new' ? 'new-password' : 'current-password'}
+                  disabled={authLoading}
+                />
+              </div>
+
+              {authError && (
+                <div className="alert-box alert-box-red checkin-auth-error">
+                  {authError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn-primary checkin-auth-submit"
+                disabled={authLoading}
+              >
+                {authLoading ? 'Please wait...' : 'Continue to Check-in'}
+              </button>
+            </form>
+
+            <div className="checkin-auth-privacy">
+              <span className="checkin-auth-privacy-icon">&#x1F512;</span>
+              Your responses are confidential and will only be visible to your school's wellbeing coordinator.
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
+  // Survey phase
   return (
     <div className="checkin">
       {/* Header */}

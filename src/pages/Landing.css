@@ -479,16 +479,50 @@
   margin-bottom: 32px;
 }
 
-.cta-actions {
+.cta-form {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+  max-width: 480px;
+  margin: 0 auto 16px;
 }
 
-.cta-btn {
+.cta-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 14px 18px;
+  font-size: 15px;
+}
+
+.cta-submit {
   padding: 14px 28px;
   font-size: 16px;
+  white-space: nowrap;
+}
+
+.cta-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.cta-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cta-success-icon {
+  font-size: 36px;
+}
+
+.cta-success-text {
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 /* Footer */

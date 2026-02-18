@@ -134,6 +134,19 @@ export default function PrincipalTeachers() {
     }
   }
 
+  function handleSendCheckin(teacher) {
+    setMessage({ type: 'success', text: `Check-in link sent to ${teacher.email}. They'll receive an email with a link to complete their wellbeing survey.` });
+  }
+
+  function handleSendAllCheckin() {
+    const activeTeachers = teachers.filter((t) => t.status === 'Accepted');
+    if (activeTeachers.length === 0) {
+      setMessage({ type: 'error', text: 'No active teachers to send check-ins to.' });
+      return;
+    }
+    setMessage({ type: 'success', text: `Check-in links sent to ${activeTeachers.length} staff member(s).` });
+  }
+
   function handleResendInvite(teacher) {
     setMessage({ type: 'success', text: `Invite resent to ${teacher.email}.` });
   }
@@ -145,7 +158,16 @@ export default function PrincipalTeachers() {
 
   return (
     <div className="p-teachers">
-      <h1 className="p-teachers-title">Manage Teachers</h1>
+      <div className="p-teachers-header">
+        <h1 className="p-teachers-title">Staff Members</h1>
+        <button
+          type="button"
+          className="btn-primary p-teachers-send-all"
+          onClick={handleSendAllCheckin}
+        >
+          Send Check-in to All Staff
+        </button>
+      </div>
 
       {message && (
         <div className={`alert-box ${message.type === 'error' ? 'alert-box-red' : 'alert-box-green'} p-teachers-message`}>
@@ -250,19 +272,30 @@ export default function PrincipalTeachers() {
                     </td>
                     <td>{teacher.lastCheckin}</td>
                     <td className="p-teachers-actions">
-                      <button
-                        type="button"
-                        className="btn-secondary p-teachers-action-btn"
-                        onClick={() => handleResendInvite(teacher)}
-                      >
-                        Resend Invite
-                      </button>
+                      {teacher.status === 'Accepted' && (
+                        <button
+                          type="button"
+                          className="btn-primary p-teachers-action-btn p-teachers-action-btn--send"
+                          onClick={() => handleSendCheckin(teacher)}
+                        >
+                          Send Check-in
+                        </button>
+                      )}
+                      {teacher.status === 'Pending' && (
+                        <button
+                          type="button"
+                          className="btn-secondary p-teachers-action-btn"
+                          onClick={() => handleResendInvite(teacher)}
+                        >
+                          Resend Invite
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="btn-secondary p-teachers-action-btn p-teachers-action-btn--danger"
                         onClick={() => handleDeactivate(teacher.id)}
                       >
-                        Deactivate
+                        Remove
                       </button>
                     </td>
                   </tr>

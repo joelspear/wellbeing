@@ -1,0 +1,226 @@
+.o-dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.o-dashboard-header h1 {
+  font-size: 32px;
+  color: var(--text-primary);
+}
+
+/* Stats grid */
+
+.o-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.o-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.o-stat-icon {
+  font-size: 32px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(108, 92, 231, 0.08);
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.o-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.o-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.o-stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Dashboard grid */
+
+.o-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Sections */
+
+.o-section {
+  margin-bottom: 24px;
+}
+
+.o-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.o-section-title {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.o-section-header .o-section-title {
+  margin-bottom: 0;
+}
+
+.o-section-link {
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+}
+
+/* Activity */
+
+.o-activity-list {
+  padding: 8px 0;
+}
+
+.o-activity-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 20px;
+  align-items: flex-start;
+}
+
+.o-activity-item:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.o-activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.o-activity-dot--checkin {
+  background: var(--green);
+}
+
+.o-activity-dot--school {
+  background: var(--purple-primary);
+}
+
+.o-activity-dot--flag {
+  background: var(--red);
+}
+
+.o-activity-content {
+  flex: 1;
+}
+
+.o-activity-text {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.o-activity-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Schools table */
+
+.o-schools-table-wrap {
+  padding: 0;
+  overflow-x: auto;
+}
+
+.o-school-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Quick actions */
+
+.o-quick-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.o-quick-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+}
+
+.o-quick-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+}
+
+.o-quick-action-icon {
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  border-radius: 12px;
+}
+
+.o-quick-action-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .o-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .o-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .o-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .o-dashboard-header h1 {
+    font-size: 26px;
+  }
+
+  .o-quick-actions {
+    flex-direction: column;
+  }
+}

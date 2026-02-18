@@ -1,7 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Landing.css';
 
 export default function Landing() {
+  const [enquiryEmail, setEnquiryEmail] = useState('');
+  const [enquirySubmitted, setEnquirySubmitted] = useState(false);
+
+  const handleEnquiry = (e) => {
+    e.preventDefault();
+    if (enquiryEmail.trim()) {
+      setEnquirySubmitted(true);
+    }
+  };
+
   return (
     <div className="landing">
       {/* Navbar */}
@@ -15,8 +26,7 @@ export default function Landing() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#how-it-works" className="nav-link">How It Works</a>
             <a href="#testimonials" className="nav-link">Testimonials</a>
-            <Link to="/login?role=teacher" className="nav-link">Sign In</Link>
-            <Link to="/login?role=teacher" className="nav-cta-btn">Get Started</Link>
+            <a href="#enquire" className="nav-cta-btn">Enquire Now</a>
           </div>
         </div>
       </nav>
@@ -33,12 +43,12 @@ export default function Landing() {
               MindCheck helps school leaders understand and support staff wellbeing through quick, confidential check-ins and actionable insights.
             </p>
             <div className="hero-actions">
-              <Link to="/login?role=teacher" className="btn-primary hero-btn">
-                Start Your Free Check-in
-              </Link>
-              <Link to="/login?role=principal" className="btn-secondary hero-btn">
-                Principal Portal
-              </Link>
+              <a href="#enquire" className="btn-primary hero-btn">
+                Enquire for Your School
+              </a>
+              <a href="#how-it-works" className="btn-secondary hero-btn">
+                See How It Works
+              </a>
             </div>
             <div className="hero-stats">
               <div className="hero-stat">
@@ -112,9 +122,9 @@ export default function Landing() {
               <p>Automatic detection of concerning scores so principals can provide timely support to staff who need it most.</p>
             </div>
             <div className="feature-card card">
-              <div className="feature-icon-wrap feature-icon--red">&#x1F4E2;</div>
-              <h3>Anonymous Reports</h3>
-              <p>Staff can submit concerns confidentially without any account or tracking. Complete anonymity guaranteed.</p>
+              <div className="feature-icon-wrap feature-icon--red">&#x1F514;</div>
+              <h3>Instant Notifications</h3>
+              <p>Principals receive real-time notifications when staff submit check-ins, ensuring timely follow-up on any concerns.</p>
             </div>
             <div className="feature-card card">
               <div className="feature-icon-wrap feature-icon--teal">&#x1F1E6;&#x1F1FA;</div>
@@ -136,20 +146,20 @@ export default function Landing() {
           <div className="steps-grid">
             <div className="step-card">
               <div className="step-number">1</div>
-              <h3 className="step-title">Principal sets up</h3>
-              <p className="step-text">Create your school account and invite your teaching staff via email. Takes under 5 minutes.</p>
+              <h3 className="step-title">We set up your school</h3>
+              <p className="step-text">Contact us and we'll enrol your school on the platform. Your principal receives a login to their private portal.</p>
             </div>
             <div className="step-connector" />
             <div className="step-card">
               <div className="step-number">2</div>
-              <h3 className="step-title">Teachers check in</h3>
-              <p className="step-text">Staff receive a link, sign up, and complete a quick 60-second wellbeing survey on any device.</p>
+              <h3 className="step-title">Principal adds staff</h3>
+              <p className="step-text">Your principal adds staff members and sends check-in links. Teachers receive an email to complete their wellbeing survey.</p>
             </div>
             <div className="step-connector" />
             <div className="step-card">
               <div className="step-number">3</div>
-              <h3 className="step-title">Principal reviews</h3>
-              <p className="step-text">View individual responses, trends, and flagged concerns in your dashboard. Export data anytime.</p>
+              <h3 className="step-title">Review & support</h3>
+              <p className="step-text">Responses appear in the principal's dashboard with scores, trends, and flagged concerns. Take action when it matters.</p>
             </div>
           </div>
         </div>
@@ -191,21 +201,38 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="cta-section">
+      {/* Enquiry CTA */}
+      <section className="cta-section" id="enquire">
         <div className="cta-inner">
           <h2 className="cta-title">Ready to support your staff?</h2>
           <p className="cta-subtitle">
-            Join schools across Australia using MindCheck to build a healthier, happier workplace.
+            Get in touch to learn how MindCheck can help your school build a healthier, happier workplace. We'll set everything up for you.
           </p>
-          <div className="cta-actions">
-            <Link to="/login?role=principal" className="btn-primary cta-btn">
-              Get Started as Principal
-            </Link>
-            <Link to="/login?role=teacher" className="btn-secondary cta-btn">
-              Teacher Sign Up
-            </Link>
-          </div>
+          {enquirySubmitted ? (
+            <div className="cta-success">
+              <span className="cta-success-icon">&#x2705;</span>
+              <p className="cta-success-text">
+                Thanks! We've received your enquiry and will be in touch shortly.
+              </p>
+            </div>
+          ) : (
+            <form className="cta-form" onSubmit={handleEnquiry}>
+              <input
+                type="email"
+                className="input-field cta-input"
+                placeholder="Enter your school email address"
+                value={enquiryEmail}
+                onChange={(e) => setEnquiryEmail(e.target.value)}
+                required
+              />
+              <button type="submit" className="btn-primary cta-submit">
+                Enquire Now
+              </button>
+            </form>
+          )}
+          <p className="cta-note">
+            No commitment required. We'll reach out to discuss your school's needs.
+          </p>
         </div>
       </section>
 
@@ -221,9 +248,9 @@ export default function Landing() {
           <div className="footer-columns">
             <div className="footer-col">
               <h4 className="footer-col-title">Platform</h4>
-              <Link to="/login?role=teacher" className="footer-link">Teacher Login</Link>
-              <Link to="/login?role=principal" className="footer-link">Principal Portal</Link>
-              <Link to="/report" className="footer-link">Anonymous Report</Link>
+              <Link to="/login" className="footer-link">Principal Login</Link>
+              <a href="#enquire" className="footer-link">Enquire Now</a>
+              <a href="#features" className="footer-link">Features</a>
             </div>
             <div className="footer-col">
               <h4 className="footer-col-title">Support</h4>

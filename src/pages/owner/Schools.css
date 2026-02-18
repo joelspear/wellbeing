@@ -1,0 +1,131 @@
+.o-schools-title {
+  font-size: 32px;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.o-schools-message {
+  margin-bottom: 20px;
+}
+
+.o-schools-form-card {
+  margin-bottom: 24px;
+}
+
+.o-schools-section-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.o-schools-form-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.o-schools-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.o-schools-form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.o-schools-form-group {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.o-schools-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.o-schools-required {
+  color: var(--red);
+}
+
+.o-schools-optional {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.o-schools-submit {
+  align-self: flex-start;
+  padding: 12px 28px;
+  font-size: 14px;
+}
+
+/* Table */
+
+.o-schools-table-card {
+  margin-bottom: 24px;
+}
+
+.o-schools-table-wrap {
+  overflow-x: auto;
+}
+
+.o-schools-table-wrap .data-table {
+  min-width: 800px;
+}
+
+.o-school-name-cell {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.o-school-email {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.o-schools-empty {
+  text-align: center;
+  padding: 32px 16px !important;
+  color: var(--text-muted);
+}
+
+.o-schools-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.o-schools-action-btn {
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+}
+
+.o-schools-action-btn--danger {
+  color: var(--red) !important;
+  border-color: var(--red) !important;
+}
+
+.o-schools-action-btn--danger:hover {
+  background: #fde8e8 !important;
+}
+
+@media (max-width: 640px) {
+  .o-schools-title {
+    font-size: 24px;
+  }
+
+  .o-schools-form-row {
+    flex-direction: column;
+  }
+}

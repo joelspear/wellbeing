@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { attemptDemoLogin } from '../lib/demo';
 import './Login.css';
 
 export default function Login() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const role = searchParams.get('role') || 'teacher';
-  const isPrincipal = role === 'principal';
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -16,12 +13,6 @@ export default function Login() {
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  const switchRole = (newRole) => {
-    setSearchParams({ role: newRole });
-    setError(null);
-    setIsSignUp(false);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,13 +30,8 @@ export default function Login() {
       setError('Password must be at least 6 characters.');
       return;
     }
-    if (isSignUp && !isPrincipal && !fullName.trim()) {
+    if (isSignUp && !fullName.trim()) {
       setError('Please enter your full name.');
-      return;
-    }
-
-    if (!isSupabaseConfigured) {
-      setError('System not configured. Please contact your administrator.');
       return;
     }
 
@@ -53,14 +39,18 @@ export default function Login() {
 
     try {
       if (isSignUp) {
+        if (!isSupabaseConfigured) {
+          throw new Error('System not configured. Please contact the MindCheck team.');
+        }
+
         const { error: signUpError } = await supabase.auth.signUp({
           email: email.trim(),
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/login?role=${role}`,
+            emailRedirectTo: `${window.location.origin}/login`,
             data: {
-              full_name: fullName.trim() || null,
-              role: isPrincipal ? 'principal' : 'teacher',
+              full_name: fullName.trim(),
+              role: 'principal',
             },
           },
         });
@@ -68,27 +58,36 @@ export default function Login() {
         if (signUpError) throw signUpError;
         setSignUpSuccess(true);
       } else {
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
+        let authenticated = false;
 
-        if (signInError) throw signInError;
+        if (isSupabaseConfigured && supabase) {
+          const { data, error: signInError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
 
-        // Check user role from metadata
-        const userRole = signInData?.user?.user_metadata?.role;
-
-        if (isPrincipal && userRole === 'teacher') {
-          await supabase.auth.signOut();
-          throw new Error('This account is registered as a teacher. Please sign in using the Teacher tab.');
+          if (!signInError && data?.user) {
+            const userRole = data.user.user_metadata?.role;
+            if (userRole !== 'principal') {
+              await supabase.auth.signOut();
+              throw new Error('This account does not have principal access. If you are a teacher, please use the check-in link provided by your principal.');
+            }
+            authenticated = true;
+          }
         }
 
-        if (!isPrincipal && userRole === 'principal') {
-          await supabase.auth.signOut();
-          throw new Error('This account is registered as a principal. Please sign in using the Principal tab.');
+        if (!authenticated) {
+          const demoUser = attemptDemoLogin(email, password, 'principal');
+          if (demoUser) {
+            authenticated = true;
+          }
         }
 
-        navigate(isPrincipal ? '/principal' : '/checkin');
+        if (!authenticated) {
+          throw new Error('Invalid email or password.');
+        }
+
+        navigate('/principal');
       }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
@@ -132,31 +131,18 @@ export default function Login() {
             </div>
           ) : (
             <>
-              <h2 className="login-title">Welcome to MindCheck</h2>
+              <div className="login-role-badge">Principal Portal</div>
+              <h2 className="login-title">
+                {isSignUp ? 'Create your account' : 'Welcome back'}
+              </h2>
               <p className="login-subtitle">
-                {isPrincipal ? 'Principal Portal' : 'Staff Portal'}
+                {isSignUp
+                  ? 'Set up your principal account to manage staff wellbeing'
+                  : 'Sign in to your principal dashboard'}
               </p>
 
-              {/* Role tabs */}
-              <div className="login-tabs">
-                <button
-                  type="button"
-                  className={`login-tab ${!isPrincipal ? 'login-tab--active' : ''}`}
-                  onClick={() => switchRole('teacher')}
-                >
-                  Teacher
-                </button>
-                <button
-                  type="button"
-                  className={`login-tab ${isPrincipal ? 'login-tab--active' : ''}`}
-                  onClick={() => switchRole('principal')}
-                >
-                  Principal
-                </button>
-              </div>
-
               <form className="login-form" onSubmit={handleSubmit}>
-                {isSignUp && !isPrincipal && (
+                {isSignUp && (
                   <div className="login-field-group">
                     <label className="login-label" htmlFor="fullName">Full Name</label>
                     <div className="login-input-wrap">
@@ -165,7 +151,7 @@ export default function Login() {
                         id="fullName"
                         type="text"
                         className="input-field login-input"
-                        placeholder="Jane Smith"
+                        placeholder="Your full name"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         autoComplete="name"
@@ -183,7 +169,7 @@ export default function Login() {
                       id="email"
                       type="email"
                       className="input-field login-input"
-                      placeholder="you@school.edu.au"
+                      placeholder="principal@school.edu.au"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       autoComplete="email"
@@ -241,13 +227,13 @@ export default function Login() {
                   </>
                 ) : (
                   <>
-                    Don't have an account?{' '}
+                    Received an invitation?{' '}
                     <button
                       type="button"
                       className="login-toggle-btn"
                       onClick={() => { setIsSignUp(true); setError(null); }}
                     >
-                      Register here
+                      Create your account
                     </button>
                   </>
                 )}

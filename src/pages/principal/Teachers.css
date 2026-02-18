@@ -1,7 +1,20 @@
+.p-teachers-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .p-teachers-title {
   font-size: 32px;
   color: var(--text-primary);
-  margin-bottom: 24px;
+}
+
+.p-teachers-send-all {
+  padding: 12px 24px;
+  font-size: 14px;
 }
 
 .p-teachers-message {
@@ -100,6 +113,12 @@
 
 .p-teachers-action-btn {
   padding: 6px 12px !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+}
+
+.p-teachers-action-btn--send {
+  padding: 6px 14px !important;
   font-size: 13px !important;
   border-radius: 8px !important;
 }
