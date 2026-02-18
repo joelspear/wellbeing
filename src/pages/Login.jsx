@@ -4,7 +4,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import './Login.css';
 
 export default function Login() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const role = searchParams.get('role') || 'teacher';
   const isPrincipal = role === 'principal';
 
@@ -16,6 +16,12 @@ export default function Login() {
   const [signUpSuccess, setSignUpSuccess] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const switchRole = (newRole) => {
+    setSearchParams({ role: newRole });
+    setError(null);
+    setIsSignUp(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +45,7 @@ export default function Login() {
     }
 
     if (!isSupabaseConfigured) {
-      setError('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.');
+      setError('System not configured. Please contact your administrator.');
       return;
     }
 
@@ -54,21 +60,33 @@ export default function Login() {
             emailRedirectTo: `${window.location.origin}/login?role=${role}`,
             data: {
               full_name: fullName.trim() || null,
-              role: isPrincipal ? 'admin' : 'teacher',
+              role: isPrincipal ? 'principal' : 'teacher',
             },
           },
         });
 
         if (signUpError) throw signUpError;
-
         setSignUpSuccess(true);
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password,
         });
 
         if (signInError) throw signInError;
+
+        // Check user role from metadata
+        const userRole = signInData?.user?.user_metadata?.role;
+
+        if (isPrincipal && userRole === 'teacher') {
+          await supabase.auth.signOut();
+          throw new Error('This account is registered as a teacher. Please sign in using the Teacher tab.');
+        }
+
+        if (!isPrincipal && userRole === 'principal') {
+          await supabase.auth.signOut();
+          throw new Error('This account is registered as a principal. Please sign in using the Principal tab.');
+        }
 
         navigate(isPrincipal ? '/principal' : '/checkin');
       }
@@ -82,7 +100,10 @@ export default function Login() {
   return (
     <div className="login">
       <header className="login-header">
-        <Link to="/" className="login-logo">MindCheck</Link>
+        <Link to="/" className="login-logo">
+          <span className="login-logo-icon">&#x1F331;</span>
+          MindCheck
+        </Link>
       </header>
 
       <main className="login-content">
@@ -111,65 +132,83 @@ export default function Login() {
             </div>
           ) : (
             <>
-              <div className={`login-role-badge ${isPrincipal ? 'login-role-badge--principal' : 'login-role-badge--teacher'}`}>
-                {isPrincipal ? 'Principal Portal' : 'Teacher'}
-              </div>
-              <h2 className="login-title">
-                {isSignUp ? 'Create your account' : 'Welcome back'}
-              </h2>
+              <h2 className="login-title">Welcome to MindCheck</h2>
               <p className="login-subtitle">
-                {isSignUp
-                  ? `Sign up with your school email to get started${isPrincipal ? ' as a principal' : ''}.`
-                  : `Sign in with your school email to continue.`}
+                {isPrincipal ? 'Principal Portal' : 'Staff Portal'}
               </p>
+
+              {/* Role tabs */}
+              <div className="login-tabs">
+                <button
+                  type="button"
+                  className={`login-tab ${!isPrincipal ? 'login-tab--active' : ''}`}
+                  onClick={() => switchRole('teacher')}
+                >
+                  Teacher
+                </button>
+                <button
+                  type="button"
+                  className={`login-tab ${isPrincipal ? 'login-tab--active' : ''}`}
+                  onClick={() => switchRole('principal')}
+                >
+                  Principal
+                </button>
+              </div>
 
               <form className="login-form" onSubmit={handleSubmit}>
                 {isSignUp && !isPrincipal && (
-                  <>
-                    <label className="login-label" htmlFor="fullName">
-                      Full name
-                    </label>
-                    <input
-                      id="fullName"
-                      type="text"
-                      className="input-field"
-                      placeholder="Jane Smith"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      autoComplete="name"
-                      disabled={loading}
-                    />
-                  </>
+                  <div className="login-field-group">
+                    <label className="login-label" htmlFor="fullName">Full Name</label>
+                    <div className="login-input-wrap">
+                      <span className="login-input-icon">&#x1F464;</span>
+                      <input
+                        id="fullName"
+                        type="text"
+                        className="input-field login-input"
+                        placeholder="Jane Smith"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        autoComplete="name"
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
                 )}
 
-                <label className="login-label" htmlFor="email">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  className="input-field"
-                  placeholder="you@school.edu.au"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  autoFocus
-                  disabled={loading}
-                />
+                <div className="login-field-group">
+                  <label className="login-label" htmlFor="email">Email Address</label>
+                  <div className="login-input-wrap">
+                    <span className="login-input-icon">&#x2709;</span>
+                    <input
+                      id="email"
+                      type="email"
+                      className="input-field login-input"
+                      placeholder="you@school.edu.au"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
+                      autoFocus
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
 
-                <label className="login-label" htmlFor="password">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  className="input-field"
-                  placeholder={isSignUp ? 'Create a password (min. 6 characters)' : 'Enter your password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete={isSignUp ? 'new-password' : 'current-password'}
-                  disabled={loading}
-                />
+                <div className="login-field-group">
+                  <label className="login-label" htmlFor="password">Password</label>
+                  <div className="login-input-wrap">
+                    <span className="login-input-icon">&#x1F512;</span>
+                    <input
+                      id="password"
+                      type="password"
+                      className="input-field login-input"
+                      placeholder={isSignUp ? 'Create a password (min. 6 characters)' : 'Enter your password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      autoComplete={isSignUp ? 'new-password' : 'current-password'}
+                      disabled={loading}
+                    />
+                  </div>
+                </div>
 
                 {error && (
                   <div className="alert-box alert-box-red login-error">
@@ -179,12 +218,12 @@ export default function Login() {
 
                 <button
                   type="submit"
-                  className="btn-primary login-submit-btn"
+                  className="login-submit-btn"
                   disabled={loading}
                 >
                   {loading
                     ? (isSignUp ? 'Creating account...' : 'Signing in...')
-                    : (isSignUp ? 'Create account' : 'Sign in')}
+                    : (isSignUp ? 'Create Account' : 'Sign In')}
                 </button>
               </form>
 
@@ -197,7 +236,7 @@ export default function Login() {
                       className="login-toggle-btn"
                       onClick={() => { setIsSignUp(false); setError(null); }}
                     >
-                      Sign in
+                      Sign in here
                     </button>
                   </>
                 ) : (
@@ -208,17 +247,9 @@ export default function Login() {
                       className="login-toggle-btn"
                       onClick={() => { setIsSignUp(true); setError(null); }}
                     >
-                      Sign up
+                      Register here
                     </button>
                   </>
-                )}
-              </p>
-
-              <p className="login-footer-text">
-                {isPrincipal ? (
-                  <Link to="/login?role=teacher">Sign in as a teacher instead</Link>
-                ) : (
-                  <Link to="/login?role=principal">Sign in as a principal instead</Link>
                 )}
               </p>
             </>
