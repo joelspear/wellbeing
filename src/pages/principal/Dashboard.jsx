@@ -91,13 +91,11 @@ export default function PrincipalDashboard() {
       try {
         if (!isSupabaseConfigured || !supabase) throw new Error('Not configured');
 
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('Not authenticated');
-
+        // Don't require auth for fetching - demo mode may not have Supabase auth
         const { data: responses, error } = await supabase
           .from('checkin_responses')
           .select('*')
-          .order('created_at', { ascending: false })
+          .order('submitted_at', { ascending: false })
           .limit(50);
 
         if (error) throw error;
@@ -107,10 +105,10 @@ export default function PrincipalDashboard() {
 
         const mapped = responses.map((r, idx) => ({
           id: r.id || idx,
-          teacher_name: r.teacher_name || r.teachers?.full_name || 'Staff Member',
-          email: r.teacher_email || r.teachers?.email || '',
-          date: (r.created_at || r.submitted_at || '').slice(0, 10),
-          overall_score: r.score_overall || 0,
+          teacher_name: r.teacher_name || 'Staff Member',
+          email: r.teacher_email || '',
+          date: (r.submitted_at || r.created_at || '').slice(0, 10),
+          overall_score: Number(r.score_overall) || 0,
           is_flagged: r.is_flagged || false,
           flag_reason: r.flag_reason || (r.is_flagged ? 'Score triggered automatic flag' : null),
         }));

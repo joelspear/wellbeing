@@ -9,7 +9,7 @@
 CREATE TABLE schools (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  state TEXT NOT NULL, -- e.g. 'SA', 'VIC', 'NSW', 'QLD'
+  state TEXT, -- e.g. 'SA', 'VIC', 'NSW', 'QLD'
   school_type TEXT DEFAULT 'secondary', -- 'primary', 'secondary', 'combined'
   created_at TIMESTAMPTZ DEFAULT now(),
   admin_user_id UUID REFERENCES auth.users(id)
@@ -22,19 +22,24 @@ CREATE TABLE teachers (
   user_id UUID REFERENCES auth.users(id),
   email TEXT NOT NULL,
   full_name TEXT,
-  role TEXT DEFAULT 'teacher', -- 'teacher', 'wellbeing_lead', 'admin'
+  role TEXT DEFAULT 'teacher',
+  status TEXT DEFAULT 'Pending',
   invite_token TEXT UNIQUE DEFAULT encode(gen_random_bytes(16), 'hex'),
   invited_at TIMESTAMPTZ DEFAULT now(),
   accepted_at TIMESTAMPTZ,
-  is_active BOOLEAN DEFAULT true
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- Check-in responses table
 CREATE TABLE checkin_responses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  teacher_id UUID REFERENCES teachers(id) ON DELETE CASCADE,
-  school_id UUID REFERENCES schools(id),
+  teacher_id UUID, -- auth.users ID of the teacher (nullable)
+  school_id UUID,  -- nullable for demo
+  teacher_name TEXT, -- denormalized for easy display
+  teacher_email TEXT, -- denormalized for easy display
   submitted_at TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ DEFAULT now(),
 
   -- Individual question scores (1-5)
   q1_mood INTEGER CHECK (q1_mood BETWEEN 1 AND 5),
@@ -114,62 +119,42 @@ CREATE TRIGGER trg_calculate_scores
   FOR EACH ROW EXECUTE FUNCTION calculate_checkin_scores();
 
 -- ============================================================
--- ROW LEVEL SECURITY (RLS)
+-- ROW LEVEL SECURITY (RLS) - Permissive for demo
 -- ============================================================
 
--- Check-in responses RLS
 ALTER TABLE checkin_responses ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Teachers see own responses"
-  ON checkin_responses FOR SELECT
-  USING (teacher_id IN (
-    SELECT id FROM teachers WHERE user_id = auth.uid()
-  ));
-
-CREATE POLICY "Teachers insert own responses"
+CREATE POLICY "Anyone can insert responses"
   ON checkin_responses FOR INSERT
-  WITH CHECK (teacher_id IN (
-    SELECT id FROM teachers WHERE user_id = auth.uid()
-  ));
+  WITH CHECK (true);
 
-CREATE POLICY "Admins see school responses"
+CREATE POLICY "Authenticated users can read responses"
   ON checkin_responses FOR SELECT
-  USING (school_id IN (
-    SELECT id FROM schools WHERE admin_user_id = auth.uid()
-  ));
+  USING (true);
 
--- Anonymous reports RLS
 ALTER TABLE anonymous_reports ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Anyone can submit anonymous report"
+CREATE POLICY "Anyone can submit reports"
   ON anonymous_reports FOR INSERT
   WITH CHECK (true);
 
-CREATE POLICY "Admins read school reports"
+CREATE POLICY "Anyone can read reports"
   ON anonymous_reports FOR SELECT
-  USING (school_id IN (
-    SELECT id FROM schools WHERE admin_user_id = auth.uid()
-  ));
+  USING (true);
 
--- Schools RLS
 ALTER TABLE schools ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admins manage own schools"
+CREATE POLICY "Anyone can manage schools"
   ON schools FOR ALL
-  USING (admin_user_id = auth.uid());
+  USING (true)
+  WITH CHECK (true);
 
--- Teachers RLS
 ALTER TABLE teachers ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admins manage school teachers"
+CREATE POLICY "Anyone can manage teachers"
   ON teachers FOR ALL
-  USING (school_id IN (
-    SELECT id FROM schools WHERE admin_user_id = auth.uid()
-  ));
-
-CREATE POLICY "Teachers see own record"
-  ON teachers FOR SELECT
-  USING (user_id = auth.uid());
+  USING (true)
+  WITH CHECK (true);
 
 -- ============================================================
 -- INDEXES for performance
@@ -178,6 +163,7 @@ CREATE POLICY "Teachers see own record"
 CREATE INDEX idx_checkin_teacher_id ON checkin_responses(teacher_id);
 CREATE INDEX idx_checkin_school_id ON checkin_responses(school_id);
 CREATE INDEX idx_checkin_submitted_at ON checkin_responses(submitted_at);
+CREATE INDEX idx_checkin_created_at ON checkin_responses(created_at);
 CREATE INDEX idx_checkin_flagged ON checkin_responses(is_flagged) WHERE is_flagged = true;
 CREATE INDEX idx_teachers_school_id ON teachers(school_id);
 CREATE INDEX idx_teachers_invite_token ON teachers(invite_token);

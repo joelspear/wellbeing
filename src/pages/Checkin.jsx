@@ -174,8 +174,12 @@ export default function Checkin() {
 
     if (isSupabaseConfigured && supabase) {
       try {
-        await supabase.from('checkin_responses').insert({
-          teacher_id: user?.id || null,
+        // Use a teacher_id that doesn't conflict with FK constraints
+        // If user.id starts with 'demo-', pass null instead
+        const teacherId = user?.id && !String(user.id).startsWith('demo-') ? user.id : null;
+
+        const { error: insertError } = await supabase.from('checkin_responses').insert({
+          teacher_id: teacherId,
           teacher_name: user?.user_metadata?.full_name || fullName || null,
           teacher_email: user?.email || email || null,
           q1_mood: answers.q1_mood,
@@ -189,8 +193,12 @@ export default function Checkin() {
           q9_confidence: answers.q9_confidence,
           q10_open_text: openText || null,
         });
+
+        if (insertError) {
+          console.error('Check-in insert failed:', insertError.message);
+        }
       } catch (err) {
-        console.warn('Supabase insert skipped:', err?.message);
+        console.error('Check-in insert error:', err?.message);
       }
     }
 

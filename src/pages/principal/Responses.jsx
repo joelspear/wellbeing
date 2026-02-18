@@ -210,7 +210,7 @@ export default function PrincipalResponses() {
         const { data, error } = await supabase
           .from('checkin_responses')
           .select('*')
-          .order('created_at', { ascending: false });
+          .order('submitted_at', { ascending: false });
 
         if (error) throw error;
 
@@ -219,11 +219,11 @@ export default function PrincipalResponses() {
             id: r.id,
             teacher_name: r.teacher_name || 'Staff Member',
             teacher_email: r.teacher_email || '',
-            date: (r.created_at || r.submitted_at || '').slice(0, 10),
-            overall: r.score_overall || 0,
-            stress: r.score_stress || 0,
-            anxiety: r.score_anxiety || 0,
-            depression: r.score_depression || 0,
+            date: (r.submitted_at || r.created_at || '').slice(0, 10),
+            overall: Number(r.score_overall) || 0,
+            stress: Number(r.score_stress) || 0,
+            anxiety: Number(r.score_anxiety) || 0,
+            depression: Number(r.score_depression) || 0,
             is_flagged: r.is_flagged || false,
             q1: r.q1_mood, q2: r.q2_work_life_balance, q3: r.q3_support,
             q4: r.q4_workload, q5: r.q5_anxiety, q6: r.q6_hope,
