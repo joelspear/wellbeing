@@ -190,9 +190,26 @@
   font-style: italic;
 }
 
+@media (max-width: 768px) {
+  .p-responses-table-wrap {
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0;
+  }
+
+  .p-responses-detail {
+    padding: 16px;
+  }
+
+  .p-responses-detail-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+}
+
 @media (max-width: 640px) {
   .p-responses-title {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .p-responses-controls {
@@ -207,5 +224,18 @@
   .p-responses-date-input,
   .p-responses-select {
     width: 100%;
+  }
+
+  .p-responses-export {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .p-responses-detail-item {
+    padding: 8px 12px;
+  }
+
+  .p-responses-detail-label {
+    font-size: 12px;
   }
 }

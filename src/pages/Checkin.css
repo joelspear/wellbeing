@@ -396,6 +396,14 @@
 /* ── Responsive ──────────────────────────────────────── */
 
 @media (max-width: 520px) {
+  .checkin-header {
+    padding: 16px 20px 0;
+  }
+
+  .checkin-body {
+    padding: 20px 20px 32px;
+  }
+
   .checkin-question-text {
     font-size: 22px;
     margin-bottom: 32px;
@@ -417,6 +425,30 @@
 
   .checkin-option-label {
     font-size: 10px;
+  }
+
+  .checkin-auth {
+    padding: 24px 16px;
+  }
+
+  .checkin-auth-card {
+    padding: 28px 20px;
+  }
+
+  .checkin-auth-title {
+    font-size: 20px;
+  }
+
+  .checkin-auth-subtitle {
+    font-size: 14px;
+  }
+
+  .checkin-auth-submit {
+    min-height: 48px;
+  }
+
+  .checkin-submit-btn {
+    min-height: 48px;
   }
 }
 

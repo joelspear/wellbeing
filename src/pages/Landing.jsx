@@ -5,6 +5,7 @@ import './Landing.css';
 export default function Landing() {
   const [enquiryEmail, setEnquiryEmail] = useState('');
   const [enquirySubmitted, setEnquirySubmitted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleEnquiry = (e) => {
     e.preventDefault();
@@ -28,7 +29,25 @@ export default function Landing() {
             <a href="#testimonials" className="nav-link">Testimonials</a>
             <a href="#enquire" className="nav-cta-btn">Enquire Now</a>
           </div>
+          <button
+            className="nav-hamburger"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            type="button"
+            aria-label="Toggle menu"
+          >
+            <span className="nav-hamburger-line" />
+            <span className="nav-hamburger-line" />
+            <span className="nav-hamburger-line" />
+          </button>
         </div>
+        {mobileMenuOpen && (
+          <div className="nav-mobile-menu">
+            <a href="#features" className="nav-mobile-link" onClick={() => setMobileMenuOpen(false)}>Features</a>
+            <a href="#how-it-works" className="nav-mobile-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+            <a href="#testimonials" className="nav-mobile-link" onClick={() => setMobileMenuOpen(false)}>Testimonials</a>
+            <a href="#enquire" className="nav-mobile-cta" onClick={() => setMobileMenuOpen(false)}>Enquire Now</a>
+          </div>
+        )}
       </nav>
 
       {/* Hero */}

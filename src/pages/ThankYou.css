@@ -147,15 +147,50 @@
 }
 
 @media (max-width: 640px) {
+  .thankyou-header {
+    padding: 16px 20px;
+  }
+
+  .thankyou-content {
+    padding: 24px 16px;
+  }
+
   .thankyou-card {
-    padding: 32px 24px;
+    padding: 28px 20px;
+  }
+
+  .thankyou-icon {
+    font-size: 48px;
   }
 
   .thankyou-title {
-    font-size: 26px;
+    font-size: 24px;
+  }
+
+  .thankyou-message {
+    font-size: 15px;
+  }
+
+  .thankyou-support {
+    padding: 20px 16px;
+  }
+
+  .thankyou-helplines {
+    flex-direction: column;
+  }
+
+  .thankyou-helpline {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .thankyou-actions {
     flex-direction: column;
+  }
+
+  .thankyou-btn {
+    width: 100%;
+    min-height: 44px;
   }
 }

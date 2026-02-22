@@ -256,12 +256,24 @@
 /* Responsive */
 
 @media (max-width: 640px) {
+  .report-header {
+    padding: 16px 20px;
+  }
+
+  .report-content {
+    padding: 16px 16px 40px;
+  }
+
   .report-card {
-    padding: 28px 20px;
+    padding: 24px 16px;
   }
 
   .report-title {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .report-subtitle {
+    font-size: 15px;
   }
 
   .report-radio-label {
@@ -270,5 +282,9 @@
 
   .report-radio-text {
     font-size: 14px;
+  }
+
+  .report-submit-btn {
+    min-height: 48px;
   }
 }

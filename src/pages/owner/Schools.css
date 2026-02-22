@@ -120,12 +120,44 @@
   background: #fde8e8 !important;
 }
 
+@media (max-width: 768px) {
+  .o-schools-table-wrap {
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .o-schools-title {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .o-schools-form-row {
     flex-direction: column;
+  }
+
+  .o-schools-form-group {
+    min-width: 0;
+  }
+
+  .o-schools-submit {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .o-schools-section-title {
+    font-size: 16px;
+  }
+
+  .o-schools-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .o-schools-action-btn {
+    width: 100% !important;
+    min-height: 40px !important;
+    text-align: center;
   }
 }

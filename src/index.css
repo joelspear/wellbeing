@@ -30,6 +30,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
 }
 
 #root {
@@ -286,6 +288,27 @@ a:hover {
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px;
+  }
+
+  .input-field {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .data-table th {
+    font-size: 11px;
+    padding: 10px 12px;
+  }
+
+  .data-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 640px) {
   .card {
     border-radius: 16px;

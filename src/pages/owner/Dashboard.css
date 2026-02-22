@@ -211,16 +211,53 @@
   }
 }
 
+@media (max-width: 768px) {
+  .o-schools-table-wrap {
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0;
+  }
+}
+
 @media (max-width: 640px) {
   .o-stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .o-stat-card {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .o-stat-icon {
+    font-size: 28px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .o-stat-value {
+    font-size: 24px;
   }
 
   .o-dashboard-header h1 {
-    font-size: 26px;
+    font-size: 22px;
   }
 
   .o-quick-actions {
     flex-direction: column;
+  }
+
+  .o-quick-action {
+    padding: 16px 20px;
+  }
+
+  .o-activity-item {
+    padding: 12px 16px;
+  }
+
+  .o-section-title {
+    font-size: 18px;
   }
 }

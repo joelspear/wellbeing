@@ -191,8 +191,16 @@
 /* Responsive */
 
 @media (max-width: 640px) {
+  .resources-header {
+    padding: 16px 20px;
+  }
+
+  .resources-container {
+    padding: 0 16px 40px;
+  }
+
   .resources-title {
-    font-size: 26px;
+    font-size: 24px;
   }
 
   .resources-grid {
@@ -201,5 +209,14 @@
 
   .resources-card {
     padding: 20px;
+  }
+
+  .resources-emergency {
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+
+  .resources-card-phone {
+    font-size: 18px;
   }
 }
