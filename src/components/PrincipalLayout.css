@@ -1,6 +1,14 @@
 .principal-layout {
   display: flex;
   min-height: 100vh;
+  background: #f5f6fa;
+}
+
+/* Solid cards inside the portal for readability */
+.principal-layout .card {
+  background: #fff;
+  backdrop-filter: none;
+  border: 1px solid #eee;
 }
 
 .principal-loading {
