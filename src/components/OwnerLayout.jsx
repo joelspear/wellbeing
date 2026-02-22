@@ -30,11 +30,15 @@ export default function OwnerLayout({ children }) {
     async function checkAuth() {
       // Check Supabase auth first
       if (isSupabaseConfigured && supabase) {
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        if (currentUser && currentUser.user_metadata?.role === 'owner') {
-          setUser(currentUser);
-          setAuthChecking(false);
-          return;
+        try {
+          const { data: { user: currentUser } } = await supabase.auth.getUser();
+          if (currentUser && currentUser.user_metadata?.role === 'owner') {
+            setUser(currentUser);
+            setAuthChecking(false);
+            return;
+          }
+        } catch {
+          // Supabase unreachable — fall through to demo user check
         }
       }
 

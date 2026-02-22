@@ -55,37 +55,42 @@ export default function Checkin() {
     try {
       if (authMode === 'new') {
         // Sign up new teacher
+        let supabaseHandled = false;
         if (isSupabaseConfigured && supabase) {
-          const { data, error } = await supabase.auth.signUp({
-            email: email.trim(),
-            password,
-            options: {
-              data: {
-                full_name: fullName.trim(),
-                role: 'teacher',
+          try {
+            const { data, error } = await supabase.auth.signUp({
+              email: email.trim(),
+              password,
+              options: {
+                data: {
+                  full_name: fullName.trim(),
+                  role: 'teacher',
+                },
               },
-            },
-          });
+            });
 
-          if (error) throw error;
+            if (error) throw error;
 
-          // Some Supabase configs auto-confirm; check if we got a session
-          if (data?.user) {
-            setUser(data.user);
-            setPhase('survey');
-            return;
-          }
+            // Some Supabase configs auto-confirm; check if we got a session
+            if (data?.user) {
+              setUser(data.user);
+              setPhase('survey');
+              return;
+            }
 
-          // If email confirmation is required, try signing in
-          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password,
-          });
+            // If email confirmation is required, try signing in
+            const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+              email: email.trim(),
+              password,
+            });
 
-          if (!signInError && signInData?.user) {
-            setUser(signInData.user);
-            setPhase('survey');
-            return;
+            if (!signInError && signInData?.user) {
+              setUser(signInData.user);
+              setPhase('survey');
+              return;
+            }
+          } catch {
+            // Supabase unreachable — fall through to demo login
           }
         }
 
@@ -105,14 +110,18 @@ export default function Checkin() {
         let authenticated = false;
 
         if (isSupabaseConfigured && supabase) {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password,
-          });
+          try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: email.trim(),
+              password,
+            });
 
-          if (!error && data?.user) {
-            setUser(data.user);
-            authenticated = true;
+            if (!error && data?.user) {
+              setUser(data.user);
+              authenticated = true;
+            }
+          } catch {
+            // Supabase unreachable — fall through to demo login
           }
         }
 

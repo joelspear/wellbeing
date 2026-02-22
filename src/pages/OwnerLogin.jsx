@@ -25,19 +25,24 @@ export default function OwnerLogin() {
     try {
       // Try Supabase auth first
       if (isSupabaseConfigured && supabase) {
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
+        try {
+          const { data, error: signInError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
 
-        if (!signInError && data?.user) {
-          const role = data.user.user_metadata?.role;
-          if (role !== 'owner') {
-            await supabase.auth.signOut();
-            throw new Error('This account does not have owner access.');
+          if (!signInError && data?.user) {
+            const role = data.user.user_metadata?.role;
+            if (role !== 'owner') {
+              await supabase.auth.signOut();
+              throw new Error('This account does not have owner access.');
+            }
+            navigate('/owner');
+            return;
           }
-          navigate('/owner');
-          return;
+        } catch (supabaseErr) {
+          if (supabaseErr.message?.includes('owner access')) throw supabaseErr;
+          // Supabase unreachable — fall through to demo login
         }
       }
 

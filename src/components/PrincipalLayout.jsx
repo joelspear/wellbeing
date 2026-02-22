@@ -46,14 +46,18 @@ export default function PrincipalLayout({ children }) {
   useEffect(() => {
     async function checkAuth() {
       if (isSupabaseConfigured && supabase) {
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        if (currentUser) {
-          const userRole = currentUser.user_metadata?.role;
-          if (userRole === 'principal') {
-            setUser(currentUser);
-            setAuthChecking(false);
-            return;
+        try {
+          const { data: { user: currentUser } } = await supabase.auth.getUser();
+          if (currentUser) {
+            const userRole = currentUser.user_metadata?.role;
+            if (userRole === 'principal') {
+              setUser(currentUser);
+              setAuthChecking(false);
+              return;
+            }
           }
+        } catch {
+          // Supabase unreachable — fall through to demo user check
         }
       }
 

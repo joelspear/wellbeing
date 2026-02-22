@@ -61,18 +61,24 @@ export default function Login() {
         let authenticated = false;
 
         if (isSupabaseConfigured && supabase) {
-          const { data, error: signInError } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password,
-          });
+          try {
+            const { data, error: signInError } = await supabase.auth.signInWithPassword({
+              email: email.trim(),
+              password,
+            });
 
-          if (!signInError && data?.user) {
-            const userRole = data.user.user_metadata?.role;
-            if (userRole !== 'principal') {
-              await supabase.auth.signOut();
-              throw new Error('This account does not have principal access. If you are a teacher, please use the check-in link provided by your principal.');
+            if (!signInError && data?.user) {
+              const userRole = data.user.user_metadata?.role;
+              if (userRole !== 'principal') {
+                await supabase.auth.signOut();
+                throw new Error('This account does not have principal access. If you are a teacher, please use the check-in link provided by your principal.');
+              }
+              authenticated = true;
             }
-            authenticated = true;
+          } catch (supabaseErr) {
+            // If the error is a role mismatch, re-throw it
+            if (supabaseErr.message?.includes('principal access')) throw supabaseErr;
+            // Otherwise Supabase is unreachable — fall through to demo login
           }
         }
 
