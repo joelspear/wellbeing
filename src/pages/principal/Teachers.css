@@ -132,6 +132,52 @@
   background: #fde8e8 !important;
 }
 
+/* Mobile card layout for teachers */
+.p-teachers-mobile-list {
+  display: none;
+}
+
+.p-teachers-mobile-card {
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--purple-primary);
+}
+
+.p-teachers-mobile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.p-teachers-mobile-card-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.p-teachers-mobile-card-email {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+
+.p-teachers-mobile-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.p-teachers-mobile-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
 @media (max-width: 768px) {
   .p-teachers-table-wrap {
     -webkit-overflow-scrolling: touch;
@@ -144,15 +190,14 @@
     align-items: stretch;
   }
 
+  .p-teachers-title {
+    font-size: 24px;
+  }
+
   .p-teachers-send-all {
     width: 100%;
-    min-height: 44px;
-  }
-}
-
-@media (max-width: 640px) {
-  .p-teachers-title {
-    font-size: 22px;
+    min-height: 48px;
+    font-size: 15px;
   }
 
   .p-teachers-form-row {
@@ -168,19 +213,43 @@
     min-height: 44px;
   }
 
-  .p-teachers-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .p-teachers-action-btn,
-  .p-teachers-action-btn--send {
-    width: 100% !important;
-    min-height: 40px !important;
-    justify-content: center;
-  }
-
   .p-teachers-section-title {
     font-size: 16px;
+  }
+
+  /* Switch to card layout on mobile */
+  .p-teachers-table-card .p-teachers-table-wrap {
+    display: none;
+  }
+
+  .p-teachers-mobile-list {
+    display: block;
+  }
+
+  .p-teachers-mobile-card-actions {
+    flex-wrap: wrap;
+  }
+
+  .p-teachers-mobile-card-actions .p-teachers-action-btn,
+  .p-teachers-mobile-card-actions .p-teachers-action-btn--send {
+    flex: 1;
+    min-height: 40px !important;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .p-teachers-title {
+    font-size: 20px;
+  }
+
+  .p-teachers-mobile-card-actions {
+    flex-direction: column;
+  }
+
+  .p-teachers-mobile-card-actions .p-teachers-action-btn,
+  .p-teachers-mobile-card-actions .p-teachers-action-btn--send {
+    width: 100% !important;
   }
 }

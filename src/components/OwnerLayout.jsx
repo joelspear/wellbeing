@@ -100,6 +100,14 @@ export default function OwnerLayout({ children }) {
 
       {/* Sidebar */}
       <aside className={`owner-sidebar ${sidebarOpen ? 'owner-sidebar--open' : ''}`}>
+        <button
+          className="owner-sidebar-close"
+          onClick={() => setSidebarOpen(false)}
+          type="button"
+          aria-label="Close menu"
+        >
+          &times;
+        </button>
         <div className="owner-sidebar-header">
           <Link to="/owner" className="owner-sidebar-logo" onClick={() => setSidebarOpen(false)}>
             <span className="owner-sidebar-logo-icon">&#x1F331;</span>

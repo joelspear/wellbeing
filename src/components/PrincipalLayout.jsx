@@ -128,6 +128,14 @@ export default function PrincipalLayout({ children }) {
 
       {/* Sidebar */}
       <aside className={`principal-sidebar ${sidebarOpen ? 'principal-sidebar--open' : ''}`}>
+        <button
+          className="principal-sidebar-close"
+          onClick={() => setSidebarOpen(false)}
+          type="button"
+          aria-label="Close menu"
+        >
+          &times;
+        </button>
         <div className="principal-sidebar-header">
           <Link to="/principal" className="principal-sidebar-logo" onClick={() => setSidebarOpen(false)}>
             <span className="principal-sidebar-logo-icon">&#x1F331;</span>

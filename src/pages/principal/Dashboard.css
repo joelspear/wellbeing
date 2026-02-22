@@ -227,28 +227,8 @@
 /* Responsive */
 
 @media (max-width: 768px) {
-  .p-stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .p-chart-bars {
-    height: 160px;
-  }
-
-  .p-dashboard-header h1 {
-    font-size: 26px;
-  }
-
-  .p-table-wrap {
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -16px;
-    padding: 0 16px;
-  }
-}
-
-@media (max-width: 640px) {
-  .p-dashboard-header h1 {
-    font-size: 22px;
+  .p-dashboard-header {
+    flex-wrap: wrap;
   }
 
   .p-stats-grid {
@@ -256,29 +236,41 @@
     gap: 10px;
   }
 
-  .p-stat-card {
-    padding: 16px 12px;
+  .p-chart-bars {
+    height: 160px;
   }
 
-  .p-stat-label {
-    font-size: 11px;
-  }
-
-  .p-stat-value {
+  .p-dashboard-header h1 {
     font-size: 24px;
   }
 
-  .p-chart {
-    padding: 16px;
+  .p-table-wrap {
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0;
+    border-radius: 0;
   }
 
-  .p-chart-bars {
-    height: 140px;
-    gap: 8px;
+  .p-table-wrap .data-table {
+    min-width: 420px;
   }
 
-  .p-chart-bar-track {
-    max-width: 44px;
+  .p-table-wrap .data-table th:first-child,
+  .p-table-wrap .data-table td:first-child {
+    padding-left: 16px;
+  }
+
+  .p-table-wrap .data-table th:last-child,
+  .p-table-wrap .data-table td:last-child {
+    padding-right: 16px;
+  }
+
+  .p-section {
+    margin-bottom: 24px;
+  }
+
+  .p-section-title {
+    font-size: 18px;
   }
 
   .p-reports-summary {
@@ -302,12 +294,52 @@
     align-items: flex-start;
     gap: 2px;
   }
+}
 
-  .p-section-title {
-    font-size: 18px;
+@media (max-width: 480px) {
+  .p-dashboard-header h1 {
+    font-size: 20px;
   }
 
-  .p-section {
-    margin-bottom: 24px;
+  .p-stat-card {
+    padding: 14px 10px;
+  }
+
+  .p-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  .p-stat-value {
+    font-size: 22px;
+  }
+
+  .p-stat-sub {
+    font-size: 11px;
+  }
+
+  .p-chart {
+    padding: 12px;
+  }
+
+  .p-chart-bars {
+    height: 120px;
+    gap: 6px;
+  }
+
+  .p-chart-bar-track {
+    max-width: 36px;
+  }
+
+  .p-chart-value {
+    font-size: 11px;
+  }
+
+  .p-chart-label {
+    font-size: 11px;
+  }
+
+  .p-flagged-reason {
+    font-size: 13px;
   }
 }

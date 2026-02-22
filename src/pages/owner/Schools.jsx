@@ -243,6 +243,66 @@ export default function OwnerSchools() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile card layout */}
+        <div className="o-schools-mobile-list">
+          {schools.length === 0 ? (
+            <p style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--text-muted)' }}>
+              No schools enrolled yet. Use the form above to add your first school.
+            </p>
+          ) : (
+            schools.map((school) => (
+              <div className="o-schools-mobile-card card" key={school.id}>
+                <div className="o-schools-mobile-card-header">
+                  <span className="o-schools-mobile-card-name">{school.name}</span>
+                  <span className={`badge ${
+                    school.status === 'Active' ? 'badge-green' :
+                    school.status === 'Invited' ? 'badge-amber' :
+                    'badge-red'
+                  }`}>
+                    {school.status}
+                  </span>
+                </div>
+                <div className="o-schools-mobile-card-detail">
+                  {school.principalName} &middot; {school.principalEmail}
+                </div>
+                <div className="o-schools-mobile-card-detail">
+                  Joined {formatDate(school.joinedDate)}
+                </div>
+                <div className="o-schools-mobile-card-stats">
+                  <div className="o-schools-mobile-card-stat">
+                    <span className="o-schools-mobile-card-stat-value">{school.teachers}</span>
+                    <span className="o-schools-mobile-card-stat-label">Teachers</span>
+                  </div>
+                  <div className="o-schools-mobile-card-stat">
+                    <span className="o-schools-mobile-card-stat-value">{school.checkins}</span>
+                    <span className="o-schools-mobile-card-stat-label">Check-ins</span>
+                  </div>
+                </div>
+                <div className="o-schools-mobile-card-actions">
+                  {school.status === 'Invited' && (
+                    <button
+                      type="button"
+                      className="btn-secondary o-schools-action-btn"
+                      onClick={() => handleResendInvite(school)}
+                    >
+                      Resend
+                    </button>
+                  )}
+                  {school.status !== 'Deactivated' && (
+                    <button
+                      type="button"
+                      className="btn-secondary o-schools-action-btn o-schools-action-btn--danger"
+                      onClick={() => handleDeactivate(school.id)}
+                    >
+                      Deactivate
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </section>
     </div>
   );

@@ -142,7 +142,7 @@
   color: var(--text-muted);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .p-reports-header {
     flex-direction: column;
     align-items: flex-start;
@@ -150,20 +150,36 @@
   }
 
   .p-reports-title {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .p-reports-filter-tabs {
     gap: 6px;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
   }
 
   .p-reports-filter-tab {
     padding: 8px 14px;
     font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .p-reports-card {
     padding: 16px;
+  }
+
+  .p-reports-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .p-reports-category-badge {
+    font-size: 12px;
   }
 
   .p-reports-card-text {
@@ -182,6 +198,19 @@
   .p-reports-action-btn {
     flex: 1;
     text-align: center;
-    min-height: 40px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .p-reports-list {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .p-reports-title {
+    font-size: 20px;
   }
 }

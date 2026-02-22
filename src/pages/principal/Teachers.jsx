@@ -304,6 +304,57 @@ export default function PrincipalTeachers() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile card layout */}
+        <div className="p-teachers-mobile-list">
+          {teachers.length === 0 ? (
+            <p className="p-teachers-empty" style={{ textAlign: 'center', padding: '32px 16px' }}>
+              No teachers added yet. Use the form above to invite your first teacher.
+            </p>
+          ) : (
+            teachers.map((teacher) => (
+              <div className="p-teachers-mobile-card card" key={teacher.id}>
+                <div className="p-teachers-mobile-card-header">
+                  <span className="p-teachers-mobile-card-name">{teacher.name || '--'}</span>
+                  <span className={`badge ${teacher.status === 'Accepted' ? 'badge-green' : 'badge-amber'}`}>
+                    {teacher.status}
+                  </span>
+                </div>
+                <div className="p-teachers-mobile-card-email">{teacher.email}</div>
+                <div className="p-teachers-mobile-card-meta">
+                  <span>Last check-in: {teacher.lastCheckin}</span>
+                </div>
+                <div className="p-teachers-mobile-card-actions">
+                  {teacher.status === 'Accepted' && (
+                    <button
+                      type="button"
+                      className="btn-primary p-teachers-action-btn p-teachers-action-btn--send"
+                      onClick={() => handleSendCheckin(teacher)}
+                    >
+                      Send Check-in
+                    </button>
+                  )}
+                  {teacher.status === 'Pending' && (
+                    <button
+                      type="button"
+                      className="btn-secondary p-teachers-action-btn"
+                      onClick={() => handleResendInvite(teacher)}
+                    >
+                      Resend Invite
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="btn-secondary p-teachers-action-btn p-teachers-action-btn--danger"
+                    onClick={() => handleDeactivate(teacher.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </section>
     </div>
   );

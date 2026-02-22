@@ -120,17 +120,70 @@
   background: #fde8e8 !important;
 }
 
-@media (max-width: 768px) {
-  .o-schools-table-wrap {
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -16px;
-    padding: 0;
-  }
+/* Mobile card layout for schools */
+.o-schools-mobile-list {
+  display: none;
 }
 
-@media (max-width: 640px) {
+.o-schools-mobile-card {
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--purple-primary);
+}
+
+.o-schools-mobile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.o-schools-mobile-card-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.o-schools-mobile-card-detail {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.o-schools-mobile-card-stats {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.o-schools-mobile-card-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.o-schools-mobile-card-stat-value {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.o-schools-mobile-card-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.o-schools-mobile-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
   .o-schools-title {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .o-schools-form-row {
@@ -150,14 +203,35 @@
     font-size: 16px;
   }
 
-  .o-schools-actions {
-    flex-direction: column;
-    width: 100%;
+  /* Switch to card layout on mobile */
+  .o-schools-table-card .o-schools-table-wrap {
+    display: none;
   }
 
-  .o-schools-action-btn {
-    width: 100% !important;
+  .o-schools-mobile-list {
+    display: block;
+  }
+
+  .o-schools-mobile-card-actions {
+    flex-wrap: wrap;
+  }
+
+  .o-schools-mobile-card-actions .o-schools-action-btn {
+    flex: 1;
     min-height: 40px !important;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .o-schools-form-desc {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .o-schools-title {
+    font-size: 20px;
   }
 }
