@@ -123,12 +123,10 @@ export default function PrincipalLayout({ children }) {
         </button>
       </div>
 
-      {sidebarOpen && (
-        <div
-          className="principal-sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <div
+        className={`principal-sidebar-overlay ${sidebarOpen ? 'principal-sidebar-overlay--visible' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
 
       {/* Sidebar */}
       <aside className={`principal-sidebar ${sidebarOpen ? 'principal-sidebar--open' : ''}`}>

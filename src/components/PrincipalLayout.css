@@ -1,5 +1,6 @@
 .principal-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: #f5f6fa;
 }
@@ -21,10 +22,69 @@
   color: var(--text-secondary);
 }
 
-/* Sidebar - dark theme */
+/* Header bar — always visible */
+
+.principal-mobile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #1a2332;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.principal-hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.principal-hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+}
+
+.principal-mobile-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  flex: 1;
+}
+
+.principal-notif-btn-mobile {
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Sidebar — always an overlay, hidden by default */
 
 .principal-sidebar {
-  width: 270px;
+  width: 280px;
   background: #1a2332;
   display: flex;
   flex-direction: column;
@@ -33,6 +93,50 @@
   left: 0;
   bottom: 0;
   z-index: 100;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.principal-sidebar--open {
+  transform: translateX(0);
+}
+
+.principal-sidebar-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.principal-sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.principal-sidebar-overlay {
+  display: none;
+}
+
+.principal-sidebar-overlay.principal-sidebar-overlay--visible {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 90;
 }
 
 .principal-sidebar-header {
@@ -93,8 +197,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 24px;
-  font-size: 14px;
+  padding: 14px 24px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.6);
   transition: all 0.2s;
@@ -115,7 +219,7 @@
 }
 
 .principal-sidebar-link-icon {
-  font-size: 18px;
+  font-size: 20px;
   width: 24px;
   text-align: center;
   flex-shrink: 0;
@@ -125,7 +229,7 @@
   white-space: nowrap;
 }
 
-/* Footer */
+/* Sidebar footer */
 
 .principal-sidebar-footer {
   padding: 16px 20px 24px;
@@ -194,16 +298,16 @@
   color: #e74c3c;
 }
 
-/* Main content */
+/* Main content — always full width */
 
 .principal-main {
   flex: 1;
-  margin-left: 270px;
-  padding: 0 40px 60px;
+  padding: 0 24px 60px;
   max-width: 1100px;
   width: 100%;
   min-width: 0;
   overflow-x: hidden;
+  margin: 0 auto;
 }
 
 /* Top bar */
@@ -212,7 +316,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 0 20px;
+  padding: 20px 0 16px;
   margin-bottom: 8px;
   position: relative;
 }
@@ -234,8 +338,7 @@
 
 /* Notification bell */
 
-.principal-notif-btn,
-.principal-notif-btn-mobile {
+.principal-notif-btn {
   position: relative;
   background: none;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -249,12 +352,6 @@
 
 .principal-notif-btn:hover {
   background: rgba(108, 92, 231, 0.06);
-}
-
-.principal-notif-btn-mobile {
-  margin-left: auto;
-  border: none;
-  padding: 4px;
 }
 
 .principal-notif-badge {
@@ -359,137 +456,11 @@
   z-index: 150;
 }
 
-/* Mobile header */
-
-.principal-mobile-header {
-  display: none;
-}
-
-.principal-hamburger {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.principal-hamburger-line {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: var(--text-primary);
-  border-radius: 1px;
-}
-
-.principal-mobile-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--purple-primary);
-}
-
-.principal-sidebar-overlay {
-  display: none;
-}
-
-/* Sidebar close button (mobile) */
-.principal-sidebar-close {
-  display: none;
-}
-
-/* Responsive */
+/* Mobile adjustments */
 
 @media (max-width: 768px) {
-  .principal-mobile-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: #1a2332;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .principal-mobile-title {
-    color: #fff;
-    flex: 1;
-  }
-
-  .principal-hamburger-line {
-    background: #fff;
-  }
-
-  .principal-hamburger {
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .principal-notif-btn-mobile {
-    color: #fff;
-    font-size: 22px;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .principal-sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    width: 280px;
-  }
-
-  .principal-sidebar--open {
-    transform: translateX(0);
-  }
-
-  .principal-sidebar-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 10;
-    transition: background 0.2s;
-  }
-
-  .principal-sidebar-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .principal-sidebar-overlay {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 90;
-  }
-
   .principal-main {
-    margin-left: 0;
-    padding: 16px 16px 40px;
-    max-width: 100%;
-    overflow-x: hidden;
+    padding: 0 16px 40px;
   }
 
   .principal-topbar {
@@ -521,15 +492,6 @@
 
   .principal-notif-backdrop {
     z-index: 150;
-  }
-
-  .principal-sidebar-link {
-    padding: 14px 24px;
-    font-size: 15px;
-  }
-
-  .principal-sidebar-link-icon {
-    font-size: 20px;
   }
 
   .principal-sidebar-footer {

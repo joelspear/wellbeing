@@ -94,13 +94,11 @@ export default function OwnerLayout({ children }) {
         <span className="owner-mobile-title">MindCheck</span>
       </div>
 
-      {/* Sidebar overlay for mobile */}
-      {sidebarOpen && (
-        <div
-          className="owner-sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Sidebar overlay */}
+      <div
+        className={`owner-sidebar-overlay ${sidebarOpen ? 'owner-sidebar-overlay--visible' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
 
       {/* Sidebar */}
       <aside className={`owner-sidebar ${sidebarOpen ? 'owner-sidebar--open' : ''}`}>
